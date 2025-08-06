@@ -1,22 +1,33 @@
 class CategoriesController < ApplicationController
+  before_action :authenticate_user!, except: [:index, :show] # ✅ Kiểm tra token trước mọi action
   before_action :set_category, only: %i[show update destroy]
 
   def index
     authorize Category # authorize the class
-    categories = Category.all
+    categories = Category.includes(:books)
+            .page(params[:page] || 1)
+            .per(params[:per_page] || 5)
     render json: {
              status: {
                code: 200,
                message: 'Fetched categories successfully',
              },
-             data: categories,
+             categories: categories,
            },
            status: :ok
   end
 
   def show
     authorize @category
-    render json: category
+
+    render json: {
+             status: {
+               code: 200,
+               message: 'Fetched categories successfully',
+             },
+             category: @category,
+           },
+           status: :ok
   end
 
   def create
@@ -28,7 +39,7 @@ class CategoriesController < ApplicationController
                  code: 201,
                  message: 'Category created successfully',
                },
-               data: category,
+               category: category,
              },
              status: :created
     else
@@ -52,7 +63,7 @@ class CategoriesController < ApplicationController
                  code: 200,
                  message: 'Category updated successfully',
                },
-               data: @category,
+               category: @category
              },
              status: :ok
     else
@@ -76,6 +87,7 @@ class CategoriesController < ApplicationController
                  message:
                    "Category '#{@category.name}' and its subcategories have been deleted.",
                },
+               category: @category
              },
              status: :ok
     else

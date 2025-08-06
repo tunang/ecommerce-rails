@@ -1,5 +1,5 @@
 class AddressesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:index, :show] # ✅ Kiểm tra token trước mọi action
   before_action :set_address, only: %i[show update destroy]
 
   def index

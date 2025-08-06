@@ -5,10 +5,12 @@ import type { SagaIterator } from 'redux-saga';
 
 // Import reducers
 import authReducer from './slices/authSlice';
-
+import categoryReducer from './slices/categorySlice';
+import authorReducer from './slices/authorSlice';
 // Import sagas
 import { authSaga } from './sagas/authSaga';
-
+import { categorySaga } from './sagas/categorySaga';
+import { authorSaga } from './sagas/authorSaga';    
 // Create saga middleware
 const sagaMiddleware = createSagaMiddleware();
 
@@ -16,7 +18,8 @@ const sagaMiddleware = createSagaMiddleware();
 function* rootSaga(): SagaIterator {
   yield all([
     fork(authSaga),
-    
+    fork(categorySaga),
+    fork(authorSaga),
   ]);
 }
 
@@ -24,7 +27,8 @@ function* rootSaga(): SagaIterator {
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-
+    category: categoryReducer,
+    author: authorReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

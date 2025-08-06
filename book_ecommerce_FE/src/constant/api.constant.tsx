@@ -4,6 +4,9 @@ export const ApiConstant = {
     register: '/signup',
     logout: '/logout',
   },
+  category: {
+    getCategories: '/categories',
+  },
 };
 
 

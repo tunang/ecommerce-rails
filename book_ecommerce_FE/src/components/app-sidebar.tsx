@@ -35,24 +35,29 @@ const items = [
     icon: Home,
   },
   {
-    title: "Book",
-    url: "/admin/books",
-    icon: Book,
-  },
-  {
-    title: "Order",
-    url: "/admin/orders",
-    icon: Package,
-  },
-  {
     title: "User",
     url: "/admin/users",
     icon: User2,
   },
   {
-    title: "Genre",
-    url: "/admin/genres",
+    title: "Author",
+    url: "/admin/authors",
+    icon: User2,
+  },
+  {
+    title: "Book",
+    url: "/admin/books",
+    icon: Book,
+  },
+  {
+    title: "Category",
+    url: "/admin/categories",
     icon: List,
+  },
+  {
+    title: "Order",
+    url: "/admin/orders",
+    icon: Package,
   },
 ];
 

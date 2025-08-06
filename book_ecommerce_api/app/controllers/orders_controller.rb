@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:index, :show] # ✅ Kiểm tra token trước mọi action
   before_action :set_order, only: %i[show update destroy]
   before_action :authorize_order, only: %i[show update destroy]
 
@@ -58,7 +58,7 @@ class OrdersController < ApplicationController
                  code: 201,
                  message: 'Order created successfully',
                },
-               data: OrderSerializer.new(order).as_json,
+               order: OrderSerializer.new(order).as_json,
              },
              status: :created
     end
@@ -71,9 +71,17 @@ class OrdersController < ApplicationController
     render json: { error: e.message }, status: :bad_request
   end
 
+  
   def update
     if @order.update(order_params)
-      render json: @order, status: :ok
+         render json: {
+               status: {
+                 code: 201,
+                 message: 'Order created successfully',
+               },
+               order: OrderSerializer.new(@order).as_json,
+             },
+             status: :created
     else
       render json: {
                errors: @order.errors.full_messages,
@@ -84,7 +92,14 @@ class OrdersController < ApplicationController
 
   def destroy
     @order.destroy
-    render json: { message: 'Order deleted successfully' }, status: :ok
+    render json: {
+                status: {
+                  code: 201,
+                  message: 'Order created successfully',
+                },
+                order: OrderSerializer.new(@order).as_json,
+              },
+              status: :created
   end
 
   private

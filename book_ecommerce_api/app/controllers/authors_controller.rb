@@ -1,18 +1,31 @@
 class AuthorsController < ApplicationController
+  before_action :authenticate_user!, except: [:index, :show] # ✅ Kiểm tra token trước mọi action
   before_action :set_author, only: %i[show update destroy]
 
   def index
     authorize Author
-    authors = Author.all
+
+    authors = Author
+                .includes(photo_attachment: :blob) 
+                .page(params[:page] || 1)
+                .per(params[:per_page] || 10)
+
     render json: {
-             status: {
-               code: 200,
-               message: 'Fetched authors successfully',
-             },
-             data: authors.map { |a| AuthorSerializer.new(a).as_json },
-           },
-           status: :ok
+      status: {
+        code: 200,
+        message: 'Fetched authors successfully'
+      },
+      authors: authors.map { |a| AuthorSerializer.new(a).as_json },
+      pagination: {
+        current_page: authors.current_page,
+        next_page: authors.next_page,
+        prev_page: authors.prev_page,
+        total_pages: authors.total_pages,
+        total_count: authors.total_count
+      },
+    }, status: :ok
   end
+
 
   def show
     authorize @author
@@ -21,7 +34,7 @@ class AuthorsController < ApplicationController
                code: 200,
                message: 'Fetched author successfully',
              },
-             data: AuthorSerializer.new(@author).as_json,
+             author: AuthorSerializer.new(@author).as_json,
            },
            status: :ok
   end
@@ -36,7 +49,7 @@ class AuthorsController < ApplicationController
                  code: 201,
                  message: 'Author created successfully',
                },
-               data: AuthorSerializer.new(author).as_json,
+               author: AuthorSerializer.new(author).as_json,
              },
              status: :created
     else
@@ -60,7 +73,7 @@ class AuthorsController < ApplicationController
                  code: 200,
                  message: 'Author updated successfully',
                },
-               data: @author,
+               author: @author
              },
              status: :ok
     else
@@ -83,6 +96,7 @@ class AuthorsController < ApplicationController
                  code: 200,
                  message: "Author '#{@author.name}' has been deleted.",
                },
+               author: @author
              },
              status: :ok
     else

@@ -1,4 +1,5 @@
 class CartsController < ApplicationController
+  before_action :authenticate_user!, except: [:show] # ✅ Kiểm tra token trước mọi action
   before_action :authenticate_user!
 
   def show
@@ -27,7 +28,16 @@ class CartsController < ApplicationController
     binding.pry
     item.quantity += params[:quantity].to_i
     if item.save
-      render json: { message: 'Item added to cart.' }, status: :ok
+      render json: {
+        status: {
+          code: 200,
+          message: "Item added to cart"
+        }
+        item: {
+          quantity: item.quantity,
+          book: BookSerializer.new(item.book).as_json
+        }
+      }
     else
       render json: { error: item.errors.full_messages }, status: :unprocessable_entity
     end
@@ -39,7 +49,16 @@ class CartsController < ApplicationController
 
     if item
       item.destroy
-      render json: { message: 'Item removed.' }, status: :ok
+      render json: {
+        status: {
+          code: 200,
+          message: "Item removed from cart"
+        }
+        item: {
+          quantity: item.quantity,
+          book: BookSerializer.new(item.book).as_json
+        }
+      }
     else
       render json: { error: 'Item not found' }, status: :not_found
     end
