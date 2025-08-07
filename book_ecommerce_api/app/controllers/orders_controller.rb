@@ -1,21 +1,78 @@
 class OrdersController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show] # ✅ Kiểm tra token trước mọi action
+  before_action :authenticate_user!, except: %i[index show] # ✅ Kiểm tra token trước mọi action
   before_action :set_order, only: %i[show update destroy]
   before_action :authorize_order, only: %i[show update destroy]
 
   def index
-    @orders = current_user.orders
-    render json: @orders, status: :ok
+    @orders =
+      current_user
+        .orders
+        .includes(:books, :user, :shipping_address)
+        .page(params[:page] || 1)
+        .per(params[:per_page] || 10)
+
+    authorize @orders
+
+    render json: {
+             status: {
+               code: 200,
+               message: 'Fetched orders successfully',
+             },
+             orders: @orders.map { |order| OrderSerializer.new(order).as_json },
+             pagination: {
+               current_page: @orders.current_page,
+               next_page: @orders.next_page,
+               prev_page: @orders.prev_page,
+               total_pages: @orders.total_pages,
+               total_count: @orders.total_count,
+             },
+           },
+           status: :ok
+  end
+
+  def get_all
+    orders =
+      Order
+        .includes(:books, :user, :shipping_address)
+        .page(params[:page] || 1)
+        .per(params[:per_page] || 5)
+
+    authorize Order, :get_all?
+
+    render json: {
+             status: {
+               code: 200,
+               message: 'Fetched all orders successfully',
+             },
+             orders: orders.map { |order| OrderSerializer.new(order).as_json },
+             pagination: {
+               current_page: orders.current_page,
+               next_page: orders.next_page,
+               prev_page: orders.prev_page,
+               total_pages: orders.total_pages,
+               total_count: orders.total_count,
+             },
+           },
+           status: :ok
   end
 
   def show
-    render json: @order, status: :ok
+    authorize @order
+
+    render json: {
+             status: {
+               code: 200,
+               message: 'Fetched order successfully',
+             },
+             order: OrderSerializer.new(@order).as_json,
+           },
+           status: :ok
   end
 
   def create
     ActiveRecord::Base.transaction do
       cart_items = current_user.cart_items.includes(:book)
-      
+
       raise ActiveRecord::RecordNotFound, 'Cart is empty' if cart_items.empty?
 
       subtotal = cart_items.sum { |item| item.book.price * item.quantity }
@@ -23,7 +80,7 @@ class OrdersController < ApplicationController
       shipping_cost = 5
       total_amount = subtotal + tax_amount + shipping_cost
       order =
-        current_user.orders.create!(  
+        current_user.orders.create!(
           order_number: SecureRandom.hex(10).upcase,
           status: 0,
           subtotal: subtotal,
@@ -71,10 +128,10 @@ class OrdersController < ApplicationController
     render json: { error: e.message }, status: :bad_request
   end
 
-  
   def update
+    authorize @order
     if @order.update(order_params)
-         render json: {
+      render json: {
                status: {
                  code: 201,
                  message: 'Order created successfully',
@@ -93,13 +150,13 @@ class OrdersController < ApplicationController
   def destroy
     @order.destroy
     render json: {
-                status: {
-                  code: 201,
-                  message: 'Order created successfully',
-                },
-                order: OrderSerializer.new(@order).as_json,
-              },
-              status: :created
+             status: {
+               code: 201,
+               message: 'Order created successfully',
+             },
+             order: OrderSerializer.new(@order).as_json,
+           },
+           status: :created
   end
 
   private
@@ -113,6 +170,6 @@ class OrdersController < ApplicationController
   end
 
   def order_params
-    params.require(:order).permit(:shipping_address_id, :payment_method, :notes)
+    params.require(:order).permit(:shipping_address_id, :payment_method, :note, :status)
   end
 end

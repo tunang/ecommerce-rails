@@ -68,7 +68,7 @@ export function DataTable<TData, TValue>({
               <TableCell colSpan={columns.length} className="h-32 text-center">
                 <div className="flex flex-col items-center justify-center text-muted-foreground">
                   <p className="text-lg font-medium">Không có dữ liệu</p>
-                  <p className="text-sm">Chưa có sách nào được tạo</p>
+                  <p className="text-sm">Chưa có đơn hàng nào</p>
                 </div>
               </TableCell>
             </TableRow>

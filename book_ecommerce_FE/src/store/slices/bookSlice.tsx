@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Book } from '../../types/book.type';
+import type { Book, BookFormData } from '../../types/book.type';
 
 interface BookState {
   books: Book[];
@@ -27,7 +27,7 @@ const bookSlice = createSlice({
   initialState,
   reducers: {
     // Fetch books actions
-    fetchBooksRequest: (state, action: PayloadAction<{ page?: number; size?: number; search?: string }>) => {
+    fetchBooksRequest: (state, _action: PayloadAction<{ page?: number; per_page?: number; search?: string }>) => {
       state.isLoading = true;
       state.error = null;
     },
@@ -44,7 +44,7 @@ const bookSlice = createSlice({
     },
 
     // Fetch single book actions
-    fetchBookByIdRequest: (state, action: PayloadAction<number>) => {
+    fetchBookByIdRequest: (state, _action: PayloadAction<number>) => {
       state.isLoading = true;
       state.error = null;
     },
@@ -58,7 +58,7 @@ const bookSlice = createSlice({
       state.error = action.payload;
     },
 
-    fetchBooksByGenreRequest: (state, action: PayloadAction<{ genreId: number }>) => {
+    fetchBooksByGenreRequest: (state, _action: PayloadAction<{ genreId: number }>) => {
       state.isLoading = true;
       state.error = null;
     },
@@ -77,7 +77,7 @@ const bookSlice = createSlice({
 
 
     // Create book actions (Admin only)
-    createBookRequest: (state, action: PayloadAction<any>) => {
+    createBookRequest: (state, _action: PayloadAction<BookFormData>) => {
       state.isLoading = true;
       state.error = null;
     },
@@ -93,17 +93,17 @@ const bookSlice = createSlice({
     },
 
     // Update book actions (Admin only)
-    updateBookRequest: (state, action: PayloadAction<{ id: number; book: any }>) => {
+    updateBookRequest: (state, _action: PayloadAction<{ id: number; book: BookFormData }>) => {
       state.isLoading = true;
       state.error = null;
     },
     updateBookSuccess: (state, action: PayloadAction<Book>) => {
       state.isLoading = false;
-      const index = state.books.findIndex(book => book.bookId === action.payload.bookId);
+      const index = state.books.findIndex((book: Book) => book.id === action.payload.id);
       if (index !== -1) {
         state.books[index] = action.payload;
       }
-      if (state.currentBook?.bookId === action.payload.bookId) {
+      if (state.currentBook?.id === action.payload.id) {
         state.currentBook = action.payload;
       }
       state.error = null;
@@ -114,15 +114,15 @@ const bookSlice = createSlice({
     },
 
     // Delete book actions (Admin only)
-    deleteBookRequest: (state, action: PayloadAction<{ bookId: number }>) => {
+    deleteBookRequest: (state, _action: PayloadAction<{ bookId: number }>) => {
       state.isLoading = true;
       state.error = null;
     },
     deleteBookSuccess: (state, action: PayloadAction<number>) => {
       state.isLoading = false;
-      state.books = state.books.filter(book => book.bookId !== action.payload);
+      state.books = state.books.filter((book: Book) => book.id !== action.payload);
       state.totalBooks -= 1;
-      if (state.currentBook?.bookId === action.payload) {
+      if (state.currentBook?.id === action.payload) {
         state.currentBook = null;
       }
       state.error = null;

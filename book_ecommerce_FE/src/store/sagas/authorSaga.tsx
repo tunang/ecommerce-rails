@@ -77,7 +77,7 @@ function* createAuthorSaga(action: PayloadAction<{ name: string; biography: stri
         'Content-Type': 'multipart/form-data',
       },
     });
-    yield put(createAuthorSuccess(response.data || response));
+    yield put(createAuthorSuccess(response.data.author || response.data));
   } catch (error: any) {
     yield put(createAuthorFailure(error.response?.data?.message || 'Lỗi khi tạo tác giả'));
   }
@@ -104,7 +104,8 @@ function* updateAuthorSaga(action: PayloadAction<{ id: number; author: { name: s
         'Content-Type': 'multipart/form-data',
       },
     });
-    yield put(updateAuthorSuccess(response.data || response));
+    console.log(response.data.author);
+    yield put(updateAuthorSuccess(response.data.author || response.data ));
   } catch (error: any) {
     yield put(updateAuthorFailure(error.response?.data?.message || 'Lỗi khi cập nhật tác giả'));
   }

@@ -22,25 +22,25 @@ class CartsController < ApplicationController
   end
 
   def add_item
-    authorize :cart, :add_item?
-    book = Book.find(params[:book_id])
-    item = current_user.cart_items.find_or_initialize_by(book:)
-    binding.pry
-    item.quantity += params[:quantity].to_i
-    if item.save
+      authorize :cart, :add_item?
+      book = Book.find(params[:book_id])
+      item = current_user.cart_items.find_or_initialize_by(book:)
+      item.quantity += params[:quantity].to_i
+      if item.save
       render json: {
-        status: {
-          code: 200,
-          message: "Item added to cart"
-        }
-        item: {
-          quantity: item.quantity,
-          book: BookSerializer.new(item.book).as_json
-        }
-      }
-    else
-      render json: { error: item.errors.full_messages }, status: :unprocessable_entity
-    end
+  status: {
+    code: 200,
+    message: "Item added to cart"
+  },
+  item: {
+    quantity: item.quantity,
+    book: BookSerializer.new(item.book).as_json
+  }
+}
+
+      else
+        render json: { error: item.errors.full_messages }, status: :unprocessable_entity
+      end
   end
 
   def remove_item
@@ -53,7 +53,7 @@ class CartsController < ApplicationController
         status: {
           code: 200,
           message: "Item removed from cart"
-        }
+        },
         item: {
           quantity: item.quantity,
           book: BookSerializer.new(item.book).as_json
@@ -69,4 +69,5 @@ class CartsController < ApplicationController
     current_user.cart_items.destroy_all
     render json: { message: 'Cart cleared.' }, status: :ok
   end
+  
 end

@@ -7,6 +7,7 @@ import Register from "@/pages/auth/register";
 import Books from "@/pages/admin/books";
 import Categories from "@/pages/admin/categories";
 import Authors from "@/pages/admin/authors";
+import Orders from "@/pages/admin/orders";
 
 const router = createBrowserRouter([
   {
@@ -49,8 +50,11 @@ const router = createBrowserRouter([
       {
         path: 'authors',
         element: <Authors />
+      },
+      {
+        path: 'orders',
+        element: <Orders />
       }
-
     ]
   }
 ]);

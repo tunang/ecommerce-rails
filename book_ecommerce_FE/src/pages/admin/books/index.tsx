@@ -1,33 +1,67 @@
 import { useEffect, useState } from "react";
-import { columns } from "./columns";
-import type { Payment } from "./columns";
+import { createColumns } from "./columns";
+import type { Book } from "@/types/book.type";
 import { DataTable } from "./data-table";
+import { BookModal } from "./BookModal";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { fetchBooksRequest } from "@/store/slices/bookSlice";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "@/store";
 
-function DemoPage() {
-  const [data, setData] = useState<Payment[]>([]);
+function BooksPage() {
+  const dispatch = useDispatch();
+  const { books, pageSize, currentPage } = useSelector((state: RootState) => state.book);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
 
   useEffect(() => {
-    async function fetchData() {
-      // Simulate fetch from API
-      const result: Payment[] = [
-        {
-          id: "728ed52f",
-          amount: 100,
-          status: "pending",
-          email: "m@example.com",
-        },
-      ];
-      setData(result);
-    }
+    dispatch(fetchBooksRequest({ page: currentPage, per_page: pageSize, search: "" }));
+  }, [currentPage, pageSize, dispatch]);
 
-    fetchData();
-  }, []);
+  const handleEdit = (book: Book) => {
+    setSelectedBook(book);
+    setModalMode("edit");
+    setIsModalOpen(true);
+  };
+
+  const handleCreate = () => {
+    setSelectedBook(null);
+    setModalMode("create");
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedBook(null);
+  };
+
+  const columns = createColumns(handleEdit);
 
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
+    <div className="h-full flex flex-col">
+      <div className="flex justify-between items-center p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <h1 className="text-2xl font-bold">Quản lý sách</h1>
+        <Button onClick={handleCreate}>
+          <Plus className="h-4 w-4 mr-2" />
+          Thêm sách
+        </Button>
+      </div>
+      
+      <div className="flex-1 overflow-hidden">
+        <DataTable columns={columns} data={books} />
+      </div>
+      
+      <BookModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        book={selectedBook}
+        mode={modalMode}
+      />
     </div>
   );
 }
 
-export default DemoPage;
+export default BooksPage;

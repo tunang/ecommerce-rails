@@ -14,11 +14,27 @@ class OrderSerializer
       total_amount: order.total_amount,
       created_at: order.created_at,
       updated_at: order.updated_at,
-      user_id: order.user_id
+      user: user_data,
+      shipping_address: shipping_address_data
     }
   end
 
   private
 
   attr_reader :order
+
+  def user_data
+    user = order.user
+    {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    }
+  end
+
+  def shipping_address_data
+    return nil unless order.shipping_address
+
+    AddressSerializer.new(order.shipping_address).as_json
+  end
 end

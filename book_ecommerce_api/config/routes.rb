@@ -9,17 +9,25 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
+  
   resources :categories
   resources :books
   resources :authors
   resources :addresses
   resources :orders
   
-
+  
   # Cart routes
   get    '/cart',          to: 'carts#show'
   post   '/cart/add',      to: 'carts#add_item'
   delete '/cart/remove/:id',   to: 'carts#remove_item'
   delete '/cart/clear',    to: 'carts#clear'
+  
+  #Admin order routes
+  get '/orders/admin/get_all', to: 'orders#get_all'
+  
+
+  #Refresh token routes
+  post '/refresh_token', to: 'refresh_tokens#create'
 
 end

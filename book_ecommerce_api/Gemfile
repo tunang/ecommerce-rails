@@ -11,6 +11,8 @@ gem 'jsonapi-serializer'
 gem 'pry-rails'
 gem "paranoia"
 gem 'kaminari'
+gem 'redis'
+
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', '>= 2.1'

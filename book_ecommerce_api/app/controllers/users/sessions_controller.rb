@@ -3,7 +3,10 @@ class Users::SessionsController < Devise::SessionsController
   respond_to :json
 
   private
+
   def respond_with(current_user, _opts = {})
+    refresh_token = JwtTokenService.issue_refresh_token(current_user)
+
     render json: {
              status: {
                code: 200,
@@ -13,6 +16,8 @@ class Users::SessionsController < Devise::SessionsController
                UserSerializer.new(current_user).serializable_hash[:data][
                  :attributes
                ],
+             access_token: request.env['warden-jwt_auth.token'],
+             refresh_token: refresh_token,
            },
            status: :ok
   end
@@ -42,7 +47,5 @@ class Users::SessionsController < Devise::SessionsController
     end
   end
 
-  def me
-    
-  end
+  def me; end
 end

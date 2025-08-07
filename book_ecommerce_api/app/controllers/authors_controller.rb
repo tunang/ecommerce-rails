@@ -73,7 +73,7 @@ class AuthorsController < ApplicationController
                  code: 200,
                  message: 'Author updated successfully',
                },
-               author: @author
+               author: AuthorSerializer.new(@author).as_json
              },
              status: :ok
     else

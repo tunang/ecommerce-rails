@@ -3,8 +3,12 @@ class OrderPolicy < ApplicationPolicy
     user.present?
   end
 
+  def get_all?
+    user.admin?
+  end
+
   def show?
-    user_is_owner?
+    user_is_owner? || user.admin?
   end
 
   def create?
@@ -12,11 +16,11 @@ class OrderPolicy < ApplicationPolicy
   end
 
   def update?
-    user_is_owner?
+    user_is_owner? || user.admin?
   end
 
   def destroy?
-    user_is_owner?
+    user_is_owner? || user.admin?
   end
 
   private
