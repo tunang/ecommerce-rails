@@ -56,7 +56,7 @@ export function CategoryModal({ isOpen, onClose, category, mode }: CategoryModal
         form.reset({
           name: category.name || "",
           description: category.description || "",
-          parent_id: category.parent_id ? category.parent_id.toString() : undefined,
+          parent_id: category.parent_id ? category.parent_id : undefined,
           active: category.active ?? true,
         });
       } else {
@@ -94,7 +94,7 @@ export function CategoryModal({ isOpen, onClose, category, mode }: CategoryModal
     const transformedValues = {
       name: values.name,
       description: values.description || undefined,
-      parent_id: values.parent_id && values.parent_id !== "" ? parseInt(values.parent_id) : null,
+      parent_id: values.parent_id || undefined,
       active: values.active,
     };
 

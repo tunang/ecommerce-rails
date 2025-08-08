@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createColumns } from "./columns";
 import type { Order } from "@/types/order.type";
-import { DataTable } from "./DataTable";
+import { DataTable } from "@/components/ui/table/DataTable";
 import { OrderDetailModal } from "./OrderDetailModal";
 import { fetchOrdersRequest } from "@/store/slices/orderSlice";
 import { useDispatch, useSelector } from "react-redux";

@@ -46,6 +46,4 @@ class Users::SessionsController < Devise::SessionsController
              status: :unauthorized
     end
   end
-
-  def me; end
 end

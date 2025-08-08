@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { createColumns } from "./Columns";
 import type { Author } from "@/types/author.type";
-import { DataTable } from "./DataTable";
 import { AuthorModal } from "./AuthorModal";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { fetchAuthorsRequest } from "@/store/slices/authorSlice";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
+import { DataTable } from "@/components/ui/table/DataTable";
 
 function AuthorsPage() {
   const dispatch = useDispatch();

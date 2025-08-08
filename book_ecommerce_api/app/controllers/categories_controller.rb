@@ -1,20 +1,42 @@
 class CategoriesController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show] # ✅ Kiểm tra token trước mọi action
-  before_action :set_category, only: %i[show update destroy]
+  before_action :authenticate_user!, except: %i[index show get_nested_category] # ✅ Kiểm tra token trước mọi action
+  before_action :set_category, only: %i[show update destroy] 
 
+  #Get flat category list, for admin
   def index
     authorize Category # authorize the class
-    categories = Category.includes(:books)
-            .page(params[:page] || 1)
-            .per(params[:per_page] || 5)
+    categories =
+      Category
+        .includes(:books)
+        .page(params[:page] || 1)
+        .per(params[:per_page] || 5)
     render json: {
              status: {
                code: 200,
                message: 'Fetched categories successfully',
              },
              categories: categories,
+             meta: {
+               current_page: categories.current_page,
+               next_page: categories.next_page,
+               prev_page: categories.prev_page,
+               total_pages: categories.total_pages,
+               total_count: categories.total_count,
+             },
            },
            status: :ok
+  end
+
+  #Get nested category list, for client
+  def get_nested_category
+    categories = Category.all()
+    render json: {
+             status: {
+               code: 200,
+               message: 'Fetched categories successfully',
+             },
+             categories: CategoryTreeSerializer.new(categories).as_json,
+           }, status: :ok
   end
 
   def show
@@ -63,7 +85,7 @@ class CategoriesController < ApplicationController
                  code: 200,
                  message: 'Category updated successfully',
                },
-               category: @category
+               category: @category,
              },
              status: :ok
     else
@@ -87,7 +109,7 @@ class CategoriesController < ApplicationController
                  message:
                    "Category '#{@category.name}' and its subcategories have been deleted.",
                },
-               category: @category
+               category: @category,
              },
              status: :ok
     else
@@ -103,6 +125,7 @@ class CategoriesController < ApplicationController
   end
 
   private
+
   def set_category
     @category = Category.find(params[:id])
   end

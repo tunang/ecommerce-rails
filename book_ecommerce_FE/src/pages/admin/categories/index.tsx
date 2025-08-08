@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createColumns } from "./Columns";
 import type { Category } from "@/types/category.type";
-import { DataTable } from "./DataTable";
+import { DataTable } from "@/components/ui/table/DataTable";
 import { CategoryModal } from "./CategoryModal";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";

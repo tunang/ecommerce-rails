@@ -8,6 +8,8 @@ import Books from "@/pages/admin/books";
 import Categories from "@/pages/admin/categories";
 import Authors from "@/pages/admin/authors";
 import Orders from "@/pages/admin/orders";
+import CategoryPage from "@/pages/category";
+import CategoryProductPage from "@/pages/category/CategoryProducts";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +19,14 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: 'category',
+        element: <CategoryPage   />,
+      },
+      {
+        path: 'category/:id',
+        element: <CategoryProductPage />,
       },
     ],
   },

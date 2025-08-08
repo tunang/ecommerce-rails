@@ -90,8 +90,8 @@ export function BookModal({ isOpen, onClose, book, mode }: BookModalProps) {
           sample_pages: undefined,
           author_ids: book.authors?.map(a => a.id).join(",") || "",
           category_ids: book.categories?.map(c => c.id).join(",") || "",
-          featured: false, // Assume default
-          active: true, // Assume default
+          featured: book.featured || false, // Assume default
+          active: book.active || true, // Assume default
           sold_count: "0", // Assume default
           cost_price: "", // Assume default
         });
@@ -109,7 +109,7 @@ export function BookModal({ isOpen, onClose, book, mode }: BookModalProps) {
           author_ids: "",
           category_ids: "",
           featured: false,
-          active: true,
+          active: false,
           sold_count: "0",
           cost_price: "",
         });
@@ -196,6 +196,7 @@ export function BookModal({ isOpen, onClose, book, mode }: BookModalProps) {
     onClose();
   };
 
+  console.log(book)
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">

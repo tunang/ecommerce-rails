@@ -1,30 +1,40 @@
 class BooksController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show] # ✅ Kiểm tra token trước mọi action
+  before_action :authenticate_user!, except: %i[index show] # ✅ Kiểm tra token trước mọi action
   before_action :set_book, only: %i[show update destroy]
 
   def index
-  authorize Book
-  books = Book.includes(:authors, :categories, cover_image_attachment: :blob, sample_pages_attachments: :blob)
-              .page(params[:page] || 1)
-              .per(params[:per_page] || 5)
+    authorize Book
+    books =
+      Book
+        .includes(
+          :authors,
+          :categories,
+          cover_image_attachment: :blob,
+          sample_pages_attachments: :blob,
+        )
+        .page(params[:page] || 1)
+        .per(params[:per_page] || 5)
 
-  render json: {
-           status: {
-             code: 200,
-             message: 'Books loaded successfully',
+    render json: {
+             status: {
+               code: 200,
+               message: 'Books loaded successfully',
+             },
+             books: books.map { |book| BookSerializer.new(book).as_json },
+             meta: {
+               current_page: books.current_page,
+               next_page: books.next_page,
+               prev_page: books.prev_page,
+               total_pages: books.total_pages,
+               total_count: books.total_count,
+             },
            },
-           books: books.map { |book| BookSerializer.new(book).as_json },
-           meta: {
-             current_page: books.current_page,
-             next_page: books.next_page,
-             prev_page: books.prev_page,
-             total_pages: books.total_pages,
-             total_count: books.total_count
-           }
-         },
-         status: :ok
-end
+           status: :ok
+  end
 
+  # def get_book_by_category
+
+  # end
 
   def show
     authorize @book
@@ -105,7 +115,7 @@ end
                  code: 200,
                  message: "Book '#{@book.title}' has been deleted.",
                },
-               book: BookSerializer.new(@book).as_json
+               book: BookSerializer.new(@book).as_json,
              },
              status: :ok
     else
@@ -136,6 +146,8 @@ end
         :price,
         :stock_quantity,
         :cover_image,
+        :featured,
+        :active,
         sample_pages: [],
         author_ids: [],
         category_ids: [],

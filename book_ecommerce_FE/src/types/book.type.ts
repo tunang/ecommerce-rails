@@ -6,6 +6,8 @@ export type Book = {
   discount_percentage: string;
   stock_quantity: number;
   cover_image_url: string;
+  featured: boolean;
+  active: boolean;
   sample_page_urls: string[];
   authors: Author[];
   categories: Category[];

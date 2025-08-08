@@ -11,15 +11,17 @@ import {
   logoutSuccess,
   logoutFailure,
   logoutRequest,
+  initializeAuth,
 } from "../slices/authSlice";
 import api from "@/services/api.service";
 import { ApiConstant } from "@/constant/api.constant";
-
+import { setUser } from "../slices/authSlice";
 // Types for API responses
 interface ApiResponse {
   data: {
     user: any;
-    token?: string;
+    access_token: string;
+    refresh_token: string;
   };
   headers: {
     authorization?: string;
@@ -30,7 +32,15 @@ interface LoginResponse extends ApiResponse {}
 interface RegisterResponse extends ApiResponse {}
 
 // Authentication initialization saga
-
+function* initializeAuthSaga(): SagaIterator {
+  try {
+    const response = yield call(api.get, '/me');
+    console.log(response.data.user);
+    yield put(setUser(response.data.user));
+  } catch (error) {
+    yield put(loginFailure("Token không hợp lệ"));
+  }
+}
 // Login saga
 function* loginSaga(
   action: PayloadAction<{ email: string; password: string }>
@@ -50,20 +60,20 @@ function* loginSaga(
     );
     console.log(response)
     // Lấy token từ authorization header
-    const authHeader = response.headers.authorization;
-  
-    let token = '';
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      token = authHeader.split(" ")[1];
-      localStorage.setItem("token", token);
-    } else {
-      console.error("Không tìm thấy token trong Authorization header");
+    const accessToken = response.data.access_token;
+    const refreshToken = response.data.refresh_token;
+    if (accessToken) {
+      localStorage.setItem("access_token", accessToken);
+    }
+
+    if (refreshToken) {
+      localStorage.setItem("refresh_token", refreshToken);
     }
   
     yield put(
       loginSuccess({
         user: response.data.user,
-        token: token,
+        token: accessToken,
       })
     );
 
@@ -92,23 +102,21 @@ function* registerSaga(
         password,
       },
     });
-    console.log(response);
-    // Lấy token từ authorization header
-    const authHeader = response.headers.authorization;
-    console.log('Auth header:', authHeader);
-  
-    let token = '';
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      token = authHeader.split(" ")[1];
-      localStorage.setItem("token", token);
-    } else {
-      console.error("Không tìm thấy token trong Authorization header");
+
+    const accessToken = response.data.access_token;
+    const refreshToken = response.data.refresh_token;
+    if (accessToken) {
+      localStorage.setItem("access_token", accessToken);
+    }
+
+    if (refreshToken) {
+      localStorage.setItem("refresh_token", refreshToken);
     }
 
     yield put(
       registerSuccess({
         user: response.data.user,
-        token: token,
+        token: accessToken,
       })
     );
 
@@ -123,7 +131,8 @@ function* registerSaga(
 function* logoutSaga(): SagaIterator {
   try {
     yield call(api.delete, ApiConstant.auth.logout);
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     yield put(logoutSuccess());
   } catch (error: any) {
     yield put(
@@ -137,4 +146,5 @@ export function* authSaga(): SagaIterator {
   yield takeLatest(loginRequest.type, loginSaga);
   yield takeLatest(registerRequest.type, registerSaga);
   yield takeLatest(logoutRequest.type, logoutSaga);
+  yield takeLatest(initializeAuth.type, initializeAuthSaga);
 }

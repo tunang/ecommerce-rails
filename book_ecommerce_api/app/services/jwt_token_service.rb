@@ -1,6 +1,6 @@
 # app/services/jwt_token_service.rb
 class JwtTokenService
-  REFRESH_EXP = 7.days
+  REFRESH_EXP = 1.days
 
   def self.issue_refresh_token(user)
     refresh_token = SecureRandom.uuid

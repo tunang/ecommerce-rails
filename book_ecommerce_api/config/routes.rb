@@ -29,5 +29,11 @@ Rails.application.routes.draw do
 
   #Refresh token routes
   post '/refresh_token', to: 'refresh_tokens#create'
+  
+  #Sessiom route
+  get '/me', to: 'users#me'
+
+  #category route
+  get '/categories/user/get_nested_category', to: 'categories#get_nested_category'
 
 end
