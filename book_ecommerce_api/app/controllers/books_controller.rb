@@ -1,5 +1,5 @@
 class BooksController < ApplicationController
-  before_action :authenticate_user!, except: %i[index show] # ✅ Kiểm tra token trước mọi action
+  before_action :authenticate_user!, except: %i[index show get_books_by_category] # ✅ Kiểm tra token trước mọi action
   before_action :set_book, only: %i[show update destroy]
 
   def index
@@ -32,9 +32,36 @@ class BooksController < ApplicationController
            status: :ok
   end
 
-  # def get_book_by_category
+  def get_books_by_category
+    category = Category.find(params[:category_id] || params[:id])
+    books =
+      category
+        .books
+        .includes(
+          :authors,
+          :categories,
+          cover_image_attachment: :blob,
+          sample_pages_attachments: :blob,
+        )
+        .page(params[:page] || 1)
+        .per(params[:per_page] || 5)
 
-  # end
+    render json: {
+             status: {
+               code: 200,
+               message: 'Books by category loaded successfully',
+             },
+             books: books.map { |book| BookSerializer.new(book).as_json },
+             meta: {
+               current_page: books.current_page,
+               next_page: books.next_page,
+               prev_page: books.prev_page,
+               total_pages: books.total_pages,
+               total_count: books.total_count,
+             },
+           },
+           status: :ok
+  end
 
   def show
     authorize @book
@@ -43,7 +70,7 @@ class BooksController < ApplicationController
                code: 200,
                message: 'Book loaded successfully',
              },
-             book: @book,
+             book: BookSerializer.new(@book).as_json,
            },
            status: :ok
   end

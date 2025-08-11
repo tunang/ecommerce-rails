@@ -10,7 +10,8 @@ import Authors from "@/pages/admin/authors";
 import Orders from "@/pages/admin/orders";
 import CategoryPage from "@/pages/category";
 import CategoryProductPage from "@/pages/category/CategoryProducts";
-
+import BookDetail from "@/pages/books/BookDetail";
+import Cart from "@/pages/cart";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -22,11 +23,19 @@ const router = createBrowserRouter([
       },
       {
         path: 'category',
-        element: <CategoryPage   />,
+        element: <CategoryPage  />,
       },
       {
         path: 'category/:id',
         element: <CategoryProductPage />,
+      },
+      {
+        path: 'books/:id',
+        element: <BookDetail />,
+      },
+      {
+        path: 'cart',
+        element: <Cart />,
       },
     ],
   },

@@ -33,7 +33,8 @@ Rails.application.routes.draw do
   #Sessiom route
   get '/me', to: 'users#me'
 
-  #category route
+  #Category route
   get '/categories/user/get_nested_category', to: 'categories#get_nested_category'
+  get '/categories/:id/products', to: 'books#get_books_by_category'
 
 end

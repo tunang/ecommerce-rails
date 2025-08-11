@@ -14,7 +14,8 @@ import { authSaga } from './sagas/authSaga';
 import { categorySaga } from './sagas/categorySaga';
 import { authorSaga } from './sagas/authorSaga';
 import { bookSaga } from './sagas/bookSaga';
-import { orderSaga } from './sagas/orderSaga';    
+import cartReducer from './slices/cartSlice';
+import { cartSaga } from './sagas/cartSaga';
 // Create saga middleware
 const sagaMiddleware = createSagaMiddleware();
 
@@ -25,7 +26,7 @@ function* rootSaga(): SagaIterator {
     fork(categorySaga),
     fork(authorSaga),
     fork(bookSaga),
-    fork(orderSaga),
+    fork(cartSaga),
   ]);
 }
 
@@ -37,6 +38,7 @@ export const store = configureStore({
     author: authorReducer,
     book: bookReducer,
     order: orderReducer,
+    cart: cartReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

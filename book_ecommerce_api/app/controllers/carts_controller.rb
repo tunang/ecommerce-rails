@@ -11,7 +11,7 @@ class CartsController < ApplicationController
              code: 200,
              message: 'Cart loaded successfully',
            },
-           data: cart_items.map do |item|
+           books: cart_items.map do |item|
              {
                quantity: item.quantity,
                book: BookSerializer.new(item.book).as_json
@@ -28,16 +28,15 @@ class CartsController < ApplicationController
       item.quantity += params[:quantity].to_i
       if item.save
       render json: {
-  status: {
-    code: 200,
-    message: "Item added to cart"
-  },
-  item: {
-    quantity: item.quantity,
-    book: BookSerializer.new(item.book).as_json
-  }
-}
-
+        status: {
+          code: 200,
+          message: "Item added to cart"
+        },
+        item: {
+          quantity: item.quantity,
+          book: BookSerializer.new(item.book).as_json
+        }
+      }
       else
         render json: { error: item.errors.full_messages }, status: :unprocessable_entity
       end

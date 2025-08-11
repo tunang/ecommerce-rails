@@ -4,6 +4,9 @@ import {
   fetchCategoriesRequest,
   fetchCategoriesSuccess,
   fetchCategoriesFailure,
+  fetchNeatestCategoriesRequest,
+  fetchNeatestCategoriesSuccess,
+  fetchNeatestCategoriesFailure,
   fetchCategoryByIdRequest,
   fetchCategoryByIdSuccess,
   fetchCategoryByIdFailure,
@@ -40,6 +43,20 @@ function* fetchCategoriesSaga(action: PayloadAction<{ page?: number; per_page?: 
     }));
   } catch (error: any) {
     yield put(fetchCategoriesFailure(error.response?.data?.message || 'Lỗi khi tải danh sách thể loại'));
+  }
+}
+
+// Fetch neatest categories saga
+function* fetchNeatestCategoriesSaga(): SagaIterator {
+  try {
+
+    const response: any = yield call(api.get, '/categories/user/get_nested_category');
+
+    yield put(fetchNeatestCategoriesSuccess({
+      categories: response.data.categories || response,
+    }));
+  } catch (error: any) {
+    yield put(fetchNeatestCategoriesFailure(error.response?.data?.message || 'Lỗi khi tải danh sách thể loại'));
   }
 }
 
@@ -94,6 +111,7 @@ function* deleteCategorySaga(action: PayloadAction<{ categoryId: number }>): Sag
 // Root category saga
 export function* categorySaga(): SagaIterator {
   yield takeLatest(fetchCategoriesRequest.type, fetchCategoriesSaga);
+  yield takeLatest(fetchNeatestCategoriesRequest.type, fetchNeatestCategoriesSaga);
   yield takeLatest(fetchCategoryByIdRequest.type, fetchCategoryByIdSaga);
   yield takeLatest(createCategoryRequest.type, createCategorySaga);
   yield takeLatest(updateCategoryRequest.type, updateCategorySaga);

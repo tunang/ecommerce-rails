@@ -44,6 +44,22 @@ const categorySlice = createSlice({
       state.error = action.payload;
     },
 
+    // Fetch neatest categories actions
+    fetchNeatestCategoriesRequest: (state) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    fetchNeatestCategoriesSuccess: (state, action: PayloadAction<{ categories: Category[] }>) => {
+      state.isLoading = false;
+      state.categories = action.payload.categories;
+      state.error = null;
+    },
+
+    fetchNeatestCategoriesFailure: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
     // Fetch single category actions
     fetchCategoryByIdRequest: (state, _action: PayloadAction<number>) => {
       state.isLoading = true;
@@ -132,6 +148,9 @@ export const {
   fetchCategoriesRequest,
   fetchCategoriesSuccess,
   fetchCategoriesFailure,
+  fetchNeatestCategoriesRequest,
+  fetchNeatestCategoriesSuccess,
+  fetchNeatestCategoriesFailure,
   fetchCategoryByIdRequest,
   fetchCategoryByIdSuccess,
   fetchCategoryByIdFailure,

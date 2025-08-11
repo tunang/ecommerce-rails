@@ -1,5 +1,9 @@
 # db/seeds.rb
 
+
+
+
+
 puts "🌱 Seeding nested categories..."
 
 Category.destroy_all
