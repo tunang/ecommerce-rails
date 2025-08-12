@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/form";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
-import { registerRequest } from "@/store/slices/authSlice";
+import { clearError, registerRequest } from "@/store/slices/authSlice";
 
 const formSchema = z.object({
   name: z.string()
@@ -99,6 +99,7 @@ const Register = () => {
     if (error) {
       toast.error(error);
     }
+    dispatch(clearError());
   }, [error]);
 
   const fillDemoData = () => {

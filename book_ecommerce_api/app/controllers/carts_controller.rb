@@ -42,6 +42,27 @@ class CartsController < ApplicationController
       end
   end
 
+  def update_item
+    authorize :cart, :update_item?
+    item = current_user.cart_items.find_by(book_id: params[:book_id])
+    item.quantity += params[:quantity].to_i
+
+    if item.save
+    render json: {
+        status: {
+          code: 200,
+          message: "Item's updated"
+        },
+        item: {
+          quantity: item.quantity,
+          book: BookSerializer.new(item.book).as_json
+        }
+      }
+      else
+        render json: { error: item.errors.full_messages }, status: :unprocessable_entity
+      end
+  end
+
   def remove_item
     authorize :cart, :remove_item?
     item = current_user.cart_items.find_by(book_id: params[:id])

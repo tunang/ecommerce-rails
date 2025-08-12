@@ -35,7 +35,6 @@ interface RegisterResponse extends ApiResponse {}
 function* initializeAuthSaga(): SagaIterator {
   try {
     const response = yield call(api.get, '/me');
-    console.log(response.data.user);
     yield put(setUser(response.data.user));
   } catch (error) {
     yield put(loginFailure("Token không hợp lệ"));
@@ -58,7 +57,6 @@ function* loginSaga(
         },
       }
     );
-    console.log(response)
     // Lấy token từ authorization header
     const accessToken = response.data.access_token;
     const refreshToken = response.data.refresh_token;
@@ -94,7 +92,6 @@ function* registerSaga(
 ): SagaIterator {
   try {
     const { email, name, password } = action.payload;
-    console.log(1)
     const response: RegisterResponse = yield call(api.post, ApiConstant.auth.register, {
       user: {
         email,
@@ -103,25 +100,11 @@ function* registerSaga(
       },
     });
 
-    const accessToken = response.data.access_token;
-    const refreshToken = response.data.refresh_token;
-    if (accessToken) {
-      localStorage.setItem("access_token", accessToken);
-    }
-
-    if (refreshToken) {
-      localStorage.setItem("refresh_token", refreshToken);
-    }
-
     yield put(
-      registerSuccess({
-        user: response.data.user,
-        token: accessToken,
-      })
+      registerSuccess()
     );
 
   } catch (error: any) {
-    console.log(error);
     yield put(
       registerFailure(error.response?.data?.status?.message || "Đăng ký thất bại")
     );

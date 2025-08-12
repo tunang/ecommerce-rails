@@ -42,71 +42,71 @@ const cartSlice = createSlice({
     },
 
     // Add item to cart actions
-    // addToCartRequest: (state, action: PayloadAction<{ bookId: number; quantity: number }>) => {
-    //   state.isLoading = true;
-    //   state.error = null;
-    // },
-    // addToCartSuccess: (state, action: PayloadAction<CartItem>) => {
-    //   state.isLoading = false;
-    //   const existingItem = state.items.find(item => item.book.bookId === action.payload.book.bookId);
+    addToCartRequest: (state, action: PayloadAction<{ book_id: number; quantity: number }>) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    addToCartSuccess: (state, action: PayloadAction<CartItem>) => {
+      state.isLoading = false;
+      const existingItem = state.items.find(item => item.book.id === action.payload.book.id);
       
-    //   if (existingItem) {
-    //     existingItem.quantity += action.payload.quantity;
-    //   } else {
-    //     state.items.push(action.payload);
-    //   }
+      if (existingItem) {
+        existingItem.quantity = action.payload.quantity;
+      } else {
+        state.items.push(action.payload);
+      }
       
-    //   // Recalculate totals
-    //   state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
-    //   state.totalPrice = state.items.reduce((total, item) => total + (item.book.price * item.quantity), 0);
-    //   state.error = null;
-    // },
-    // addToCartFailure: (state, action: PayloadAction<string>) => {
-    //   state.isLoading = false;
-    //   state.error = action.payload;
-    // },
+      // Recalculate totals
+      state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+      state.totalPrice = state.items.reduce((total, item) => total + (item.book.price * item.quantity), 0);
+      state.error = null;
+    },
+    addToCartFailure: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
 
     // // Update cart item quantity actions
-    // updateCartItemRequest: (state, action: PayloadAction<{ itemId: number; quantity: number }>) => {
-    //   state.isLoading = true;
-    //   state.error = null;
-    // },
-    // updateCartItemSuccess: (state, action: PayloadAction<CartItem>) => {
-    //   state.isLoading = false;
-    //   const index = state.items.findIndex(item => item.id === action.payload.id);
+    updateCartItemRequest: (state, action: PayloadAction<{ book_id: number; quantity: number }>) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    updateCartItemSuccess: (state, action: PayloadAction<CartItem>) => {
+      state.isLoading = false;
+      const index = state.items.findIndex(item => item.book.id === action.payload.book.id);
       
-    //   if (index !== -1) {
-    //     state.items[index] = action.payload;
-    //   }
+      if (index !== -1) {
+        state.items[index] = action.payload;
+      }
       
-    //   // Recalculate totals
-    //   state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
-    //   state.totalPrice = state.items.reduce((total, item) => total + (item.book.price * item.quantity), 0);
-    //   state.error = null;
-    // },
-    // updateCartItemFailure: (state, action: PayloadAction<string>) => {
-    //   state.isLoading = false;
-    //   state.error = action.payload;
-    // },
+      // Recalculate totals
+      state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+      state.totalPrice = state.items.reduce((total, item) => total + (item.book.price * item.quantity), 0);
+      state.error = null;
+    },
+    updateCartItemFailure: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
 
-    // // Remove item from cart actions
-    // removeFromCartRequest: (state, action: PayloadAction<number>) => {
-    //   state.isLoading = true;
-    //   state.error = null;
-    // },
-    // removeFromCartSuccess: (state, action: PayloadAction<number>) => {
-    //   state.isLoading = false;
-    //   state.items = state.items.filter(item => item.id !== action.payload);
+    // Remove item from cart actions
+    removeFromCartRequest: (state, action: PayloadAction<{book_id: number}>) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    removeFromCartSuccess: (state, action: PayloadAction<CartItem>) => {
+      state.isLoading = false;
+      state.items = state.items.filter(item => item.book.id !== action.payload.book.id);
       
-    //   // Recalculate totals
-    //   state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
-    //   state.totalPrice = state.items.reduce((total, item) => total + (item.book.price * item.quantity), 0);
-    //   state.error = null;
-    // },
-    // removeFromCartFailure: (state, action: PayloadAction<string>) => {
-    //   state.isLoading = false;
-    //   state.error = action.payload;
-    // },
+      // Recalculate totals
+      state.totalItems = state.items.reduce((total, item) => total + item.quantity, 0);
+      state.totalPrice = state.items.reduce((total, item) => total + (item.book.price * item.quantity), 0);
+      state.error = null;
+    },
+    removeFromCartFailure: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
 
     // // Clear entire cart actions
     // clearCartRequest: (state) => {
@@ -152,5 +152,5 @@ const cartSlice = createSlice({
 }},
 );
 
-export const { fetchCartItemsRequest, fetchCartItemsSuccess, fetchCartItemsFailure } = cartSlice.actions;
+export const { fetchCartItemsRequest, fetchCartItemsSuccess, fetchCartItemsFailure, addToCartRequest, addToCartSuccess, addToCartFailure, removeFromCartRequest, removeFromCartSuccess, removeFromCartFailure, updateCartItemRequest, updateCartItemSuccess, updateCartItemFailure } = cartSlice.actions;
 export default cartSlice.reducer;   

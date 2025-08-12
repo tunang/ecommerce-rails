@@ -222,7 +222,7 @@ export function AuthorModal({ isOpen, onClose, author, mode }: AuthorModalProps)
                       {previewUrl && (
                         <div className="flex justify-center">
                           <img
-                            src={previewUrl}
+                            src={"http://127.0.0.1:3001/" + previewUrl}
                             alt="Preview"
                             className="max-w-48 max-h-48 object-cover rounded-lg border"
                           />

@@ -71,12 +71,12 @@ const dashboardItems = [
 ];
 
 const managementItems = [
-  {
-    title: "Users",
-    url: "/admin/users",
-    icon: Users,
-    badge: null,
-  },
+  // {
+  //   title: "Users",
+  //   url: "/admin/users",
+  //   icon: Users,
+  //   badge: null,
+  // },
   {
     title: "Authors",
     url: "/admin/authors",

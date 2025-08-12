@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/form";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
-import { loginRequest } from "@/store/slices/authSlice";
+import { clearError, loginRequest } from "@/store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 const formSchema = z.object({
   email: z.string().email({
@@ -73,6 +73,7 @@ const Login = () => {
     if (error) {
       toast.error(error);
     }
+    dispatch(clearError());
   }, [error]);
 
   return (
@@ -146,12 +147,6 @@ const Login = () => {
                   {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
                 </Button>
 
-                <Link
-                  to="/signup"
-                  className="w-full block text-center text-blue-600 hover:underline"
-                >
-                  Chưa có tài khoản? Đăng ký
-                </Link>
               </form>
             </Form>
             {/* Footer */}

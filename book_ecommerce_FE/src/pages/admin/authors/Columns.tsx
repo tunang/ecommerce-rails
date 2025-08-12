@@ -9,6 +9,8 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
   {
     accessorKey: "id",
     header: "ID",
+    enableResizing: false,
+    size: 20,
   },
   {
     accessorKey: "photo",
@@ -16,7 +18,7 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
     cell: ({ row }) => {
       const photo = row.getValue("photo") as string;
       return (
-        <div className="flex justify-center">
+        <div className="flex items-center">
           {photo ? (
             <img
               src={"http://127.0.0.1:3001/" + photo}

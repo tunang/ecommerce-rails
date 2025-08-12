@@ -16,6 +16,7 @@ import { authorSaga } from './sagas/authorSaga';
 import { bookSaga } from './sagas/bookSaga';
 import cartReducer from './slices/cartSlice';
 import { cartSaga } from './sagas/cartSaga';
+import { orderSaga } from './sagas/orderSaga';
 // Create saga middleware
 const sagaMiddleware = createSagaMiddleware();
 
@@ -27,6 +28,7 @@ function* rootSaga(): SagaIterator {
     fork(authorSaga),
     fork(bookSaga),
     fork(cartSaga),
+    fork(orderSaga),
   ]);
 }
 

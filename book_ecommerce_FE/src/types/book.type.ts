@@ -2,8 +2,8 @@ export type Book = {
   id: number;
   title: string;
   description: string;
-  price: string;
-  discount_percentage: string;
+  price: number;
+  discount_percentage: number;
   stock_quantity: number;
   cover_image_url: string;
   featured: boolean;

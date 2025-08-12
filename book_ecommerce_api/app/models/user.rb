@@ -7,7 +7,6 @@ class User < ApplicationRecord
   has_many :orders, dependent: :destroy
   has_many :order_books, through: :orders, source: :book
 
-
   enum :role, { user: 'user', admin: 'admin' }
 
   devise :database_authenticatable,

@@ -41,8 +41,8 @@ function DemoPage() {
   const columns = createColumns(handleEdit);
 
   return (
-    <div className="container mx-auto w-full">
-      <div className="flex justify-between items-center mb-6">
+    <div className="w-full p-4">
+      <div className="flex justify-between items-center mb-6 px-6">
         <h1 className="text-2xl font-bold">Quản lý danh mục</h1>
         <Button onClick={handleCreate}>
           <Plus className="h-4 w-4 mr-2" />
@@ -50,7 +50,9 @@ function DemoPage() {
         </Button>
       </div>
       
-      <DataTable columns={columns} data={categories} />
+      <div className="px-6">
+        <DataTable columns={columns} data={categories} />
+      </div>
       
       <CategoryModal
         isOpen={isModalOpen}

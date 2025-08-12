@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import type { Book } from "@/types/book.type";
 import { formatPrice, calculateDiscountedPrice, formatDate } from "@/utils/utils";
+import { addToCartRequest } from "@/store/slices/cartSlice";
+import { useDispatch } from "react-redux";
 
 interface BookDetailResponse {
   status: {
@@ -31,10 +33,11 @@ interface BookDetailResponse {
 }
 
 const BookDetail = () => {
+  const dispatch = useDispatch();
+  
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
-
   const { data, loading, error } = useFetch<BookDetailResponse>(`/books/${id}`);
 
   if (loading) {
@@ -105,7 +108,7 @@ const BookDetail = () => {
   }
 
   const { book } = data;
-  const discountedPrice = book.discount_percentage !== "0.0" 
+  const discountedPrice = book.discount_percentage !== 0.0 
     ? calculateDiscountedPrice(book.price, book.discount_percentage)
     : null;
 
@@ -165,7 +168,7 @@ const BookDetail = () => {
             
             {/* Badges */}
             <div className="absolute top-4 left-4 space-y-2">
-              {book.discount_percentage !== "0.0" && (
+              {book.discount_percentage !== 0.0 && (
                 <Badge variant="destructive" className="font-semibold">
                   -{book.discount_percentage}%
                 </Badge>
@@ -246,7 +249,7 @@ const BookDetail = () => {
             </div>
             {discountedPrice && (
               <p className="text-sm text-green-600">
-                Tiết kiệm {formatPrice(parseFloat(book.price) - discountedPrice)}
+                Tiết kiệm {formatPrice(book.price- discountedPrice)}
               </p>
             )}
           </div>
@@ -304,6 +307,7 @@ const BookDetail = () => {
                 className="flex-1" 
                 disabled={book.stock_quantity === 0}
                 size="lg"
+                onClick={() => dispatch(addToCartRequest({ book_id: book.id, quantity }))}
               >
                 <ShoppingCart className="w-5 h-5 mr-2" />
                 {book.stock_quantity > 0 ? 'Thêm vào giỏ hàng' : 'Hết hàng'}

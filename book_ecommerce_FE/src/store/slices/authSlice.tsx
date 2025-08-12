@@ -55,19 +55,15 @@ const authSlice = createSlice({
 
     // Register actions
     registerRequest: (state, action: PayloadAction<{ email: string; name: string; password: string }>) => {
-      console.log(action.payload);
-      state.isLoading = true;
+      
       state.error = null;
+      state.isLoading = true;
     },
-    registerSuccess: (state, action: PayloadAction<{ user: User; token: string }>) => {
+    registerSuccess: (state) => {
       state.isLoading = false;
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-      state.isAuthenticated = true;
       state.error = null;
     },
     registerFailure: (state, action: PayloadAction<string>) => {
-      console.log(action);
       state.isLoading = false;
       state.error = action.payload;
     },

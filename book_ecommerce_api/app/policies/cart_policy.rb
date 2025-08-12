@@ -11,6 +11,10 @@ class CartPolicy < ApplicationPolicy
     @user.present? 
   end
 
+  def update_item?
+    @user.present?
+  end
+
   def remove_item?
     @user.present?
   end

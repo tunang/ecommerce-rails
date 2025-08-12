@@ -42,7 +42,7 @@ function OrdersPage() {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col p-4">
       <div className="flex justify-between items-center p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div>
           <h1 className="text-2xl font-bold">Quản lý đơn hàng</h1>

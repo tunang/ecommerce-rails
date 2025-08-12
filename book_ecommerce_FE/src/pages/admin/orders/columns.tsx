@@ -103,14 +103,15 @@ export const createColumns = (
   {
     accessorKey: "shipping_address",
     header: "Địa chỉ giao hàng",
+    size: 300,
     cell: ({ row }) => {
       const address = row.getValue("shipping_address") as Order['shipping_address'];
       return (
-        <div className="max-w-[200px]">
+        <div className="w-full">
           <div className="text-sm font-medium">
             {address.first_name} {address.last_name}
           </div>
-          <div className="text-xs text-gray-500 truncate">
+          <div className="text-xs text-gray-500">
             {address.address_line_1}, {address.city}
           </div>
           <div className="text-xs text-gray-500">
