@@ -11,7 +11,7 @@ import type { RootState } from "@/store";
 
 function BooksPage() {
   const dispatch = useDispatch();
-  const { books, pageSize, currentPage } = useSelector((state: RootState) => state.book);
+  const { books, pageSize, currentPage, isLoading } = useSelector((state: RootState) => state.book);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
@@ -42,7 +42,7 @@ function BooksPage() {
 
   return (
     <div className="h-full flex flex-col p-4">
-      <div className="flex justify-between items-center p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex justify-between items-center py-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <h1 className="text-2xl font-bold">Quản lý sách</h1>
         <Button onClick={handleCreate}>
           <Plus className="h-4 w-4 mr-2" />
@@ -50,8 +50,8 @@ function BooksPage() {
         </Button>
       </div>
       
-      <div className="flex-1 overflow-hidden">
-        <DataTable columns={columns} data={books} />
+      <div className="flex-1">
+        <DataTable columns={columns} data={books} loading={isLoading} />
       </div>
       
       <BookModal

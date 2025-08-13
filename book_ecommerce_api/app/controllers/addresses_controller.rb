@@ -1,16 +1,30 @@
 class AddressesController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show] # ✅ Kiểm tra token trước mọi action
+  before_action :authenticate_user!, except: %i[index show] # ✅ Kiểm tra token trước mọi action
   before_action :set_address, only: %i[show update destroy]
 
   def index
     @addresses = current_user.addresses
     authorize Address
-    render json: @addresses
+    render json: {
+             status: {
+               code: 200,
+               message: 'Fetched addresses successfully',
+             },
+             authors: @addresses.map { |a| AddressSerializer.new(a).as_json },
+           },
+           status: :ok
   end
 
   def show
     authorize @address
-    render json: @address
+    render json: {
+             status: {
+               code: 200,
+               message: 'Fetched address successfully',
+             },
+             address: AddressSerializer.new(@address).as_json,
+           },
+           status: :ok
   end
 
   def create
@@ -18,7 +32,14 @@ class AddressesController < ApplicationController
     authorize @address
 
     if @address.save
-      render json: AddressSerializer.new(@address).as_json, status: :created
+      render json: {
+               status: {
+                 code: 200,
+                 message: 'Created address successfully',
+               },
+               address: AddressSerializer.new(@address).as_json,
+             },
+             status: :ok
     else
       render json: {
                status: 422,
@@ -31,7 +52,14 @@ class AddressesController < ApplicationController
   def update
     authorize @address
     if @address.update(address_params)
-      render json: @address
+      render json: {
+               status: {
+                 code: 200,
+                 message: 'Updated address successfully',
+               },
+               address: AddressSerializer.new(@address).as_json,
+             },
+             status: :ok
     else
       render json: {
                errors: @address.errors.full_messages,
@@ -42,8 +70,21 @@ class AddressesController < ApplicationController
 
   def destroy
     authorize @address
-    @address.destroy
-    head :no_content
+    if @address.destroy
+      render json: {
+               status: {
+                 code: 200,
+                 message: 'Deleted address successfully',
+               },
+               address: AddressSerializer.new(@address).as_json,
+             },
+             status: :ok
+    else
+      render json: {
+               errors: @address.errors.full_messages,
+             },
+             status: :unprocessable_entity
+    end
   end
 
   private

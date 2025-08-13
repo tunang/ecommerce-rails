@@ -11,7 +11,7 @@ import { DataTable } from "@/components/ui/table/DataTable";
 
 function AuthorsPage() {
   const dispatch = useDispatch();
-  const { authors, pageSize, currentPage } = useSelector((state: RootState) => state.author);
+  const { authors, pageSize, currentPage, isLoading } = useSelector((state: RootState) => state.author);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
@@ -42,7 +42,7 @@ function AuthorsPage() {
 
   return (
     <div className="h-full flex flex-col p-4">
-      <div className="flex justify-between items-center p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex justify-between items-center py-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <h1 className="text-2xl font-bold">Quản lý tác giả</h1>
         <Button onClick={handleCreate}>
           <Plus className="h-4 w-4 mr-2" />
@@ -51,7 +51,7 @@ function AuthorsPage() {
       </div>
       
       <div className="flex-1 overflow-hidden">
-        <DataTable columns={columns} data={authors} />
+        <DataTable columns={columns} data={authors} loading={isLoading} />
       </div>
       
       <AuthorModal

@@ -9,6 +9,7 @@ class AddressSerializer
       id: address.id,
       first_name: address.first_name,
       last_name: address.last_name,
+      phone: address.phone,
       address_line_1: address.address_line_1,
       address_line_2: address.address_line_2,
       city: address.city,

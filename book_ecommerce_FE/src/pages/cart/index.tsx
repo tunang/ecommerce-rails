@@ -225,18 +225,28 @@ const Cart = () => {
                 <span>Tạm tính ({items.length} sản phẩm)</span>
                 <span>{formatPrice(totalPrice)}</span>
               </div>
-              <div className="flex justify-between">
-                <span>Phí vận chuyển</span>
-                <span className="text-green-600">Miễn phí</span>
-              </div>
+                <div className="flex justify-between">
+                  <span>Thuế</span>
+                  <span className="text-green-600">{formatPrice(totalPrice * 0.1)}</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Phí vận chuyển</span>
+                  <span className="text-green-600">{formatPrice(5)}</span>
+                </div>
               <Separator />
               <div className="flex justify-between text-lg font-semibold">
                 <span>Tổng cộng</span>
-                <span className="text-primary">{formatPrice(totalPrice)}</span>
+                <span className="text-primary">{formatPrice(totalPrice + totalPrice * 0.1 + 5)}</span>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-3">
-              <Button className="w-full" size="lg">
+              <Button 
+                className="w-full" 
+                size="lg"
+                onClick={() => navigate("/checkout")}
+                disabled={items.length === 0}
+              >
                 Tiến hành thanh toán
               </Button>
               <Button variant="outline" className="w-full" onClick={() => navigate("/")}>

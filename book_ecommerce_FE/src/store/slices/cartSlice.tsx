@@ -108,22 +108,13 @@ const cartSlice = createSlice({
       state.error = action.payload;
     },
 
-    // // Clear entire cart actions
-    // clearCartRequest: (state) => {
-    //   state.isLoading = true;
-    //   state.error = null;
-    // },
-    // clearCartSuccess: (state) => {
-    //   state.isLoading = false;
-    //   state.items = [];
-    //   state.totalItems = 0;
-    //   state.totalPrice = 0;
-    //   state.error = null;
-    // },
-    // clearCartFailure: (state, action: PayloadAction<string>) => {
-    //   state.isLoading = false;
-    //   state.error = action.payload;
-    // },
+    // Clear entire cart action (local only)
+    clearCart: (state) => {
+      state.items = [];
+      state.totalItems = 0;
+      state.totalPrice = 0;
+      state.error = null;
+    },
 
     // // Local cart actions (for immediate UI updates)
     // incrementQuantity: (state, action: PayloadAction<number>) => {
@@ -149,8 +140,22 @@ const cartSlice = createSlice({
     // clearError: (state) => {
     //   state.error = null;
     // },
-}},
-);
+  },
+});
 
-export const { fetchCartItemsRequest, fetchCartItemsSuccess, fetchCartItemsFailure, addToCartRequest, addToCartSuccess, addToCartFailure, removeFromCartRequest, removeFromCartSuccess, removeFromCartFailure, updateCartItemRequest, updateCartItemSuccess, updateCartItemFailure } = cartSlice.actions;
+export const { 
+  fetchCartItemsRequest, 
+  fetchCartItemsSuccess, 
+  fetchCartItemsFailure, 
+  addToCartRequest, 
+  addToCartSuccess, 
+  addToCartFailure, 
+  removeFromCartRequest, 
+  removeFromCartSuccess, 
+  removeFromCartFailure, 
+  updateCartItemRequest, 
+  updateCartItemSuccess, 
+  updateCartItemFailure,
+  clearCart
+} = cartSlice.actions;
 export default cartSlice.reducer;   

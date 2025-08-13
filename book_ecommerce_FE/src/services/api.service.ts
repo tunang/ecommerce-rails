@@ -59,7 +59,6 @@ api.interceptors.response.use(
           return api(originalRequest);
         }).catch(err => {
           //If processQueue is failed, reject the request
-          console.error('Failed to retry queued request:', err);
           return Promise.reject(err);
         });
       }
@@ -138,6 +137,7 @@ apiDefaultUpload.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
 
 export default api;
 export { api, apiDefaultUpload };

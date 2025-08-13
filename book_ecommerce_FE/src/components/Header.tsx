@@ -33,6 +33,37 @@ import { Badge } from "@/components/ui/badge";
 import { fetchNeatestCategoriesRequest } from "@/store/slices/categorySlice";
 import { useEffect } from "react";
 
+const dropdownMenuUser = [
+  {
+    label: "Hồ sơ",
+    icon: <User className="mr-2 h-4 w-4" />,
+    route: "/profile",
+    admin: false,
+  },
+  {
+    label: "Địa chỉ",
+    icon: <Settings className="mr-2 h-4 w-4" />,
+    route: "/address",
+    admin: false,
+  },
+  {
+    label: "Đơn hàng",
+    icon: <ShoppingCart className="mr-2 h-4 w-4" />,
+    route: "/orders",
+    admin: false,
+  },
+
+];
+
+const dropdownMenuAdmin = [
+  {
+    label: "Dashboard",
+    icon: <ShieldUser className="mr-2 h-4 w-4" />,
+    route: "/admin",
+    admin: true,
+  },
+];
+
 const Header = () => {
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
@@ -221,24 +252,20 @@ const Header = () => {
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Hồ sơ</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <ShoppingCart className="mr-2 h-4 w-4" />
-                      <span>Đơn hàng</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Cài đặt</span>
-                    </DropdownMenuItem>
+                    {dropdownMenuUser.map((item) => (
+                      <DropdownMenuItem key={item.label} onClick={() => navigate(item.route)}>
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </DropdownMenuItem>
+                    ))}
 
                     {user?.role === "admin" && (
-                      <DropdownMenuItem onClick={() => navigate("/admin")}>
-                        <ShieldUser className="mr-2 h-4 w-4" />
-                        <span>Admin</span>
-                      </DropdownMenuItem>
+                      dropdownMenuAdmin.map((item) => (
+                        <DropdownMenuItem key={item.label} onClick={() => navigate(item.route)}>
+                          {item.icon}
+                          <span>{item.label}</span>
+                        </DropdownMenuItem>
+                      ))
                     )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem

@@ -12,11 +12,10 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ book, className = "" }: ProductCardProps) => {
-  const discountedPrice = book.discount_percentage !== "0.0" 
+  const discountedPrice = book.discount_percentage !== 0.0 
     ? calculateDiscountedPrice(book.price, book.discount_percentage)
     : null;
 
-    console.log(book)
   return (
     <Card className={`group hover:shadow-lg transition-all duration-300 overflow-hidden ${className}`}>
       <CardHeader className="p-0 relative">
@@ -32,7 +31,7 @@ const ProductCard = ({ book, className = "" }: ProductCardProps) => {
           />
           
           {/* Discount Badge */}
-          {book.discount_percentage !== "0.0" && (
+          {book.discount_percentage !== 0.0 && (
             <Badge 
               variant="destructive" 
               className="absolute top-2 left-2 font-semibold"

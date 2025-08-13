@@ -4,6 +4,7 @@ import AdminLayout from "@/layout/admin";
 import HomePage from "@/pages/home";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
+import Confirm from "@/pages/auth/confirm";
 import Books from "@/pages/admin/books";
 import Categories from "@/pages/admin/categories";
 import Authors from "@/pages/admin/authors";
@@ -12,6 +13,8 @@ import CategoryPage from "@/pages/category";
 import CategoryProductPage from "@/pages/category/CategoryProducts";
 import BookDetail from "@/pages/books/BookDetail";
 import Cart from "@/pages/cart";
+import Address from "@/pages/address";
+import Checkout from "@/pages/checkout";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -37,6 +40,14 @@ const router = createBrowserRouter([
         path: 'cart',
         element: <Cart />,
       },
+      {
+        path: 'address',
+        element: <Address />,
+      },
+      {
+        path: 'checkout',
+        element: <Checkout />,
+      },
     ],
   },
   {
@@ -46,6 +57,10 @@ const router = createBrowserRouter([
   {
     path: "/register", 
     element: <Register />,
+  },
+  {
+    path: "/confirm",
+    element: <Confirm />,
   },
   {
     path: 'admin',

@@ -1,6 +1,8 @@
 class Address < ApplicationRecord
-  belongs_to :user
+  acts_as_paranoid
 
+  belongs_to :user
+  has_many :orders
 
   validates :first_name,
             :last_name,

@@ -9,19 +9,21 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
   {
     accessorKey: "id",
     header: "ID",
+    size: 60,
     enableResizing: false,
-    size: 20,
   },
   {
     accessorKey: "photo",
     header: "Ảnh",
+    size: 80,
+    enableResizing: false,
     cell: ({ row }) => {
       const photo = row.getValue("photo") as string;
       return (
-        <div className="flex items-center">
+        <div className="flex items-center justify-start">
           {photo ? (
             <img
-              src={"http://127.0.0.1:3001/" + photo}
+              src={`http://127.0.0.1:3001/${photo}`}
               alt={row.getValue("name") as string}
               className="w-12 h-12 object-cover rounded-full border"
             />
@@ -37,26 +39,30 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
   {
     accessorKey: "name",
     header: "Tên tác giả",
+    size: 180,
   },
   {
     accessorKey: "nationality",
     header: "Quốc tịch",
+    size: 140,
   },
   {
     accessorKey: "birth_date",
     header: "Ngày sinh",
+    size: 120,
     cell: ({ row }) => {
       const date = row.getValue("birth_date") as string;
-      return <span className="font-medium">{date ? new Date(date).toLocaleDateString('vi-VN') : 'N/A'}</span>;
+      return <span className="font-medium">{date ? new Date(date).toLocaleDateString("vi-VN") : "N/A"}</span>;
     },
   },
   {
     accessorKey: "biography",
     header: "Tiểu sử",
+    size: 250,
     cell: ({ row }) => {
       const biography = row.getValue("biography") as string;
       return (
-        <div className="max-w-[200px]">
+        <div className="max-w-[230px]">
           <span className="line-clamp-2 text-sm">{biography}</span>
         </div>
       );
@@ -65,6 +71,7 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
   {
     accessorKey: "created_at",
     header: "Ngày tạo",
+    size: 140,
     cell: ({ row }) => {
       const date = row.getValue("created_at") as Date;
       return <span className="font-medium">{formatDate(date)}</span>;
@@ -73,6 +80,7 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
   {
     accessorKey: "updated_at",
     header: "Ngày cập nhật",
+    size: 140,
     cell: ({ row }) => {
       const date = row.getValue("updated_at") as Date;
       return <span className="font-medium">{formatDate(date)}</span>;
@@ -81,16 +89,13 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
   {
     accessorKey: "actions",
     header: () => <div className="text-center w-full">Hành động</div>,
-
+    size: 120,
+    enableResizing: false,
     cell: ({ row }) => {
       const author = row.original;
       return (
         <div className="flex gap-2 justify-center">
-          <Button 
-            variant="outline" 
-            size="icon"
-            onClick={() => onEdit(author)}
-          >
+          <Button variant="outline" size="icon" onClick={() => onEdit(author)}>
             <Pencil className="h-4 w-4" />
           </Button>
           <DeleteConfirmPopover author={author}>
@@ -101,5 +106,5 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
         </div>
       );
     },
-  }
+  },
 ];

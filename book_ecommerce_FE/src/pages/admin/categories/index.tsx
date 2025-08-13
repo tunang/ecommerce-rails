@@ -11,7 +11,7 @@ import type { RootState } from "@/store";
 
 function DemoPage() {
   const dispatch = useDispatch();
-  const { categories, pageSize, currentPage } = useSelector((state: RootState) => state.category);
+  const { categories, pageSize, currentPage, isLoading } = useSelector((state: RootState) => state.category);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -41,8 +41,8 @@ function DemoPage() {
   const columns = createColumns(handleEdit);
 
   return (
-    <div className="w-full p-4">
-      <div className="flex justify-between items-center mb-6 px-6">
+    <div className="w-h-full flex flex-col p-4 ">
+      <div className="flex justify-between items-center py-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <h1 className="text-2xl font-bold">Quản lý danh mục</h1>
         <Button onClick={handleCreate}>
           <Plus className="h-4 w-4 mr-2" />
@@ -50,8 +50,8 @@ function DemoPage() {
         </Button>
       </div>
       
-      <div className="px-6">
-        <DataTable columns={columns} data={categories} />
+      <div className="flex-1">
+        <DataTable columns={columns} data={categories} loading={isLoading} />
       </div>
       
       <CategoryModal

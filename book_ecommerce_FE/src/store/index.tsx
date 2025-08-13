@@ -9,14 +9,16 @@ import categoryReducer from './slices/categorySlice';
 import authorReducer from './slices/authorSlice';
 import bookReducer from './slices/bookSlice';
 import orderReducer from './slices/orderSlice';
+import cartReducer from './slices/cartSlice';
+import addressReducer from './slices/addressSlice';
 // Import sagas
 import { authSaga } from './sagas/authSaga';
 import { categorySaga } from './sagas/categorySaga';
 import { authorSaga } from './sagas/authorSaga';
 import { bookSaga } from './sagas/bookSaga';
-import cartReducer from './slices/cartSlice';
 import { cartSaga } from './sagas/cartSaga';
 import { orderSaga } from './sagas/orderSaga';
+import { addressSaga } from './sagas/addressSaga';
 // Create saga middleware
 const sagaMiddleware = createSagaMiddleware();
 
@@ -29,6 +31,7 @@ function* rootSaga(): SagaIterator {
     fork(bookSaga),
     fork(cartSaga),
     fork(orderSaga),
+    fork(addressSaga),
   ]);
 }
 
@@ -41,6 +44,7 @@ export const store = configureStore({
     book: bookReducer,
     order: orderReducer,
     cart: cartReducer,
+    address: addressReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
