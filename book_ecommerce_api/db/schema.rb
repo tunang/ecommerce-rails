@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_13_081808) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_14_043353) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -102,6 +102,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_081808) do
     t.decimal "discount_percentage", precision: 5, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "stripe_product_id"
+    t.string "stripe_price_id"
   end
 
   create_table "cart_items", force: :cascade do |t|
@@ -153,6 +155,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_13_081808) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "payment_link"
     t.index ["order_number"], name: "index_orders_on_order_number", unique: true
     t.index ["shipping_address_id"], name: "index_orders_on_shipping_address_id"
     t.index ["user_id", "status"], name: "index_orders_on_user_id_and_status"

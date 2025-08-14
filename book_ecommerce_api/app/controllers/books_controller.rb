@@ -1,5 +1,6 @@
 class BooksController < ApplicationController
-  before_action :authenticate_user!, except: %i[index show get_books_by_category] # ✅ Kiểm tra token trước mọi action
+  before_action :authenticate_user!,
+                except: %i[index show get_books_by_category] # ✅ Kiểm tra token trước mọi action
   before_action :set_book, only: %i[show update destroy]
 
   def index
@@ -74,36 +75,76 @@ class BooksController < ApplicationController
            },
            status: :ok
   end
-
   def create
-    book = Book.new(book_params.except(:cover_image, :sample_pages))
-    authorize book
-    if params[:book][:cover_image]
-      book.cover_image.attach(params[:book][:cover_image])
-    end
-    if params[:book][:sample_pages]
-      book.sample_pages.attach(params[:book][:sample_pages])
-    end
-    if book.save
+    Book.transaction do
+      @book = Book.new(book_params)
+
+      unless @book.save
+        render json: {
+                 status: {
+                   code: 422,
+                   message: 'Book creation failed',
+                 },
+                 errors: @book.errors.full_messages,
+               },
+               status: :unprocessable_entity
+        raise ActiveRecord::Rollback
+      end
+
+      begin
+        #Without sidekiq
+        # stripe_data = StripeService.create_product_with_price(@book)
+        # @book.update!(
+        #   stripe_product_id: stripe_data[:product].id,
+        #   stripe_price_id: stripe_data[:price].id,
+        # )
+
+        #Use sidekiq
+        StripeSyncBookJob.perform_async(@book.id)
+
+      rescue StripeService::StripeError => e
+        render json: {
+                 status: {
+                   code: 422,
+                   message: 'Book saved but Stripe upload failed',
+                 },
+                 errors: [e.message],
+               },
+               status: :unprocessable_entity
+        raise ActiveRecord::Rollback #If failed, rollback
+      end
+
+      # Nếu đến đây nghĩa là thành công hết
       render json: {
                status: {
                  code: 201,
                  message: 'Book created successfully',
                },
-               book: BookSerializer.new(book).as_json,
+               data: @book,
              },
              status: :created
-    else
-      render json: {
-               status: {
-                 code: 422,
-                 message: 'Book creation failed',
-               },
-               errors: book.errors.full_messages,
-             },
-             status: :unprocessable_entity
     end
   end
+
+  # if book.save
+  #   render json: {
+  #            status: {
+  #              code: 201,
+  #              message: 'Book created successfully',
+  #            },
+  #            book: BookSerializer.new(book).as_json,
+  #          },
+  #          status: :created
+  # else
+  #   render json: {
+  #            status: {
+  #              code: 422,
+  #              message: 'Book creation failed',
+  #            },
+  #            errors: book.errors.full_messages,
+  #          },
+  #          status: :unprocessable_entity
+  # end
 
   def update
     authorize @book
@@ -162,19 +203,20 @@ class BooksController < ApplicationController
   def set_book
     @book = Book.find(params[:id])
   end
-
   def book_params
     params
       .require(:book)
       .permit(
         :title,
         :description,
-        :isbn,
         :price,
         :stock_quantity,
-        :cover_image,
         :featured,
         :active,
+        :sold_count,
+        :cost_price,
+        :discount_percentage,
+        :cover_image,
         sample_pages: [],
         author_ids: [],
         category_ids: [],

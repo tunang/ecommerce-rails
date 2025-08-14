@@ -1,6 +1,8 @@
 class Order < ApplicationRecord
   belongs_to :user
-  belongs_to :shipping_address, class_name: 'Address'
+  # belongs_to :shipping_address, class_name: 'Address' #Only get address that not soft deleted
+  belongs_to :shipping_address, -> { with_deleted }, class_name: 'Address' #Get all address even soft deleted
+
   has_many :order_items, dependent: :destroy
   has_many :books, through: :order_items
 

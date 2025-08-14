@@ -72,13 +72,13 @@ class OrdersController < ApplicationController
   def create
     ActiveRecord::Base.transaction do
       cart_items = current_user.cart_items.includes(:book)
-
       raise ActiveRecord::RecordNotFound, 'Cart is empty' if cart_items.empty?
 
       subtotal = cart_items.sum { |item| item.book.price * item.quantity }
       tax_amount = subtotal * 0.1
       shipping_cost = 5
       total_amount = subtotal + tax_amount + shipping_cost
+
       order =
         current_user.orders.create!(
           order_number: SecureRandom.hex(10).upcase,
@@ -108,7 +108,46 @@ class OrdersController < ApplicationController
         )
       end
 
+      # Xóa giỏ hàng
       cart_items.destroy_all
+
+      # Tạo line items cho Stripe
+      line_items = StripeService.new.build_line_items_from_order(order)
+
+      # Append tax as separate line item
+      line_items << {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Tax (10%)',
+          },
+          unit_amount: (tax_amount * 100).to_i, # Stripe uses cents
+        },
+        quantity: 1,
+      }
+
+      # Append shipping as separate line item
+      line_items << {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: 'Shipping',
+          },
+          unit_amount: (shipping_cost * 100).to_i, # $5 → 500 cents
+        },
+        quantity: 1,
+      }
+
+      # Tạo checkout session Stripe
+      session =
+        Stripe::Checkout::Session.create(
+          payment_method_types: ['card'],
+          line_items: line_items,
+          mode: 'payment',
+          success_url:
+            "#{ENV['FRONTEND_URL']}/checkout/success?session_id={CHECKOUT_SESSION_ID}",
+          cancel_url: "#{ENV['FRONTEND_URL']}/checkout/cancel",
+        )
 
       render json: {
                status: {
@@ -116,6 +155,7 @@ class OrdersController < ApplicationController
                  message: 'Order created successfully',
                },
                order: OrderSerializer.new(order).as_json,
+               payment_url: session.url,
              },
              status: :created
     end
@@ -124,6 +164,8 @@ class OrdersController < ApplicationController
              error: e.record.errors.full_messages,
            },
            status: :unprocessable_entity
+  rescue Stripe::StripeError => e
+    render json: { error: e.message }, status: :unprocessable_entity
   rescue => e
     render json: { error: e.message }, status: :bad_request
   end
@@ -170,6 +212,8 @@ class OrdersController < ApplicationController
   end
 
   def order_params
-    params.require(:order).permit(:shipping_address_id, :payment_method, :note, :status)
+    params
+      .require(:order)
+      .permit(:shipping_address_id, :payment_method, :note, :status)
   end
 end

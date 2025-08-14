@@ -15,8 +15,7 @@ gem 'redis'
 gem 'letter_opener'
 gem 'letter_opener_web' 
 gem "sidekiq"
-gem "stripe", '~> 15.4.0'
-gem 'paranoia', '~> 2.6'
+gem "stripe"
 
 
 
