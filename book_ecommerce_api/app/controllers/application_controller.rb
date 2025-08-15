@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::API
   include Pundit::Authorization
 
-  # before_action :authenticate_user! # ✅ Kiểm tra token trước mọi action
   before_action :configure_permitted_parameters, if: :devise_controller? #Cho phép devise nhận thêm các attribute là name và avatar
 
   # Custom message for error input

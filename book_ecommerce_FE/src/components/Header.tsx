@@ -247,7 +247,7 @@ const Header = () => {
                           Người dùng
                         </p>
                         <p className="text-xs leading-none text-muted-foreground">
-                          user@example.com
+                          {user?.email}
                         </p>
                       </div>
                     </DropdownMenuLabel>

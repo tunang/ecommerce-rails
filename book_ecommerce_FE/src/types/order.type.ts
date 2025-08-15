@@ -17,6 +17,7 @@ export type Order = {
     id: number;
     first_name: string;
     last_name: string;
+    phone: string;
     address_line_1: string;
     address_line_2: string;
     city: string;

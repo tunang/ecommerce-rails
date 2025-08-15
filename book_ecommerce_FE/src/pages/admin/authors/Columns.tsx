@@ -11,6 +11,10 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
     header: "ID",
     size: 60,
     enableResizing: false,
+    cell: ({ row }) => {
+      const id = row.getValue("id") as number;
+      return <span className="font-medium text-sm">{id}</span>;
+    },
   },
   {
     accessorKey: "photo",
@@ -40,11 +44,19 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
     accessorKey: "name",
     header: "Tên tác giả",
     size: 180,
+    cell: ({ row }) => {
+      const name = row.getValue("name") as string;
+      return <span className="font-medium text-sm">{name}</span>;
+    },
   },
   {
     accessorKey: "nationality",
     header: "Quốc tịch",
     size: 140,
+    cell: ({ row }) => {
+      const nationality = row.getValue("nationality") as string;
+      return <span className="text-sm">{nationality || "N/A"}</span>;
+    },
   },
   {
     accessorKey: "birth_date",
@@ -52,7 +64,7 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
     size: 120,
     cell: ({ row }) => {
       const date = row.getValue("birth_date") as string;
-      return <span className="font-medium">{date ? new Date(date).toLocaleDateString("vi-VN") : "N/A"}</span>;
+      return <span className="text-sm">{date ? new Date(date).toLocaleDateString("vi-VN") : "N/A"}</span>;
     },
   },
   {
@@ -74,7 +86,7 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
     size: 140,
     cell: ({ row }) => {
       const date = row.getValue("created_at") as Date;
-      return <span className="font-medium">{formatDate(date)}</span>;
+      return <span className="text-sm">{formatDate(date)}</span>;
     },
   },
   {
@@ -83,12 +95,12 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
     size: 140,
     cell: ({ row }) => {
       const date = row.getValue("updated_at") as Date;
-      return <span className="font-medium">{formatDate(date)}</span>;
+      return <span className="text-sm">{formatDate(date)}</span>;
     },
   },
   {
     accessorKey: "actions",
-    header: () => <div className="text-center w-full">Hành động</div>,
+    header: () => <div className="text-center w-full">Thao tác</div>,
     size: 120,
     enableResizing: false,
     cell: ({ row }) => {

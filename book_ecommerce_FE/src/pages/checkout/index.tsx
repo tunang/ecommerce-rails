@@ -31,7 +31,7 @@ import type { RootState } from "@/store";
 import type { Address } from "@/types/address.type";
 import { checkoutSchema, type CheckoutFormData } from "@/schemas/checkout.schema";
 import { fetchAddressesRequest } from "@/store/slices/addressSlice";
-import { clearError } from "@/store/slices/orderSlice";
+import { clearError, createOrderRequest, clearCreatedOrder } from "@/store/slices/orderSlice";
 import { clearCart } from "@/store/slices/cartSlice";
 
 // Mock payment methods - có thể được load từ API
@@ -57,14 +57,14 @@ const CheckoutPage = () => {
   
   const { items: cartItems } = useSelector((state: RootState) => state.cart);
   const { addresses, isLoading: addressLoading } = useSelector((state: RootState) => state.address);
-  const { isLoading: orderLoading, error: orderError } = useSelector((state: RootState) => state.order);
+  const { isLoading: orderLoading, error: orderError, createdOrder, paymentUrl } = useSelector((state: RootState) => state.order);
   
   const [, setSelectedAddress] = useState<Address | null>(null);
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      address_id: 0,
+      shipping_address_id: 0,
       payment_method: "",
       note: "",
     },
@@ -80,7 +80,7 @@ const CheckoutPage = () => {
     if (addresses.length > 0) {
       const defaultAddr = addresses.find(addr => addr.is_default) || addresses[0];
       setSelectedAddress(defaultAddr);
-      form.setValue("address_id", defaultAddr.id);
+      form.setValue("shipping_address_id", defaultAddr.id);
     }
   }, [addresses, form]);
 
@@ -106,22 +106,24 @@ const CheckoutPage = () => {
 
   const handleAddressSelect = (address: Address) => {
     setSelectedAddress(address);
-    form.setValue("address_id", address.id);
+    form.setValue("shipping_address_id", address.id);
   };
 
   const onSubmit = (data: CheckoutFormData) => {
-    // dispatch(createOrderRequest(data));
-    console.log(data);
+    dispatch(createOrderRequest(data));
   };
 
   // Handle order creation success
   useEffect(() => {
-    if (!orderLoading && !orderError && form.formState.isSubmitSuccessful) {
-      // Clear cart và redirect
+    if (!orderLoading && !orderError && createdOrder && paymentUrl) {
+      // Clear cart
       dispatch(clearCart());
-      navigate("/orders");
+      dispatch(clearCreatedOrder());
+      
+      // Redirect đến payment URL
+      window.location.href = paymentUrl;
     }
-  }, [orderLoading, orderError, form.formState.isSubmitSuccessful, dispatch, navigate]);
+  }, [orderLoading, orderError, createdOrder, paymentUrl, dispatch]);
 
   // Clear order error sau 5 giây
   useEffect(() => {
@@ -179,7 +181,7 @@ const CheckoutPage = () => {
                 ) : addresses.length > 0 ? (
                   <FormField
                     control={form.control}
-                    name="address_id"
+                    name="shipping_address_id"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>

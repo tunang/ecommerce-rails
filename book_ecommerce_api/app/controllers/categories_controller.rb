@@ -1,5 +1,5 @@
 class CategoriesController < ApplicationController
-  before_action :authenticate_user!, except: %i[index show get_nested_category] # ✅ Kiểm tra token trước mọi action
+  before_action :authenticate_user!, except: %i[show get_nested_category] # ✅ Kiểm tra token trước mọi action
   before_action :set_category, only: %i[show update destroy] 
 
   #Get flat category list, for admin

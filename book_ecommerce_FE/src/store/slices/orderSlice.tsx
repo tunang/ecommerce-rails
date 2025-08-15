@@ -10,6 +10,8 @@ interface OrderState {
   totalOrders: number;
   currentPage: number;
   pageSize: number;
+  createdOrder: any | null;
+  paymentUrl: string | null;
 }
 
 const initialState: OrderState = {
@@ -20,12 +22,33 @@ const initialState: OrderState = {
   totalOrders: 0,
   currentPage: 1,
   pageSize: 10,
+  createdOrder: null,
+  paymentUrl: null,
 };
 
 const orderSlice = createSlice({
   name: 'order',
   initialState,
   reducers: {
+
+
+    //Fetch user orders actions
+    fetchUserOrdersRequest: (state, _action: PayloadAction<{ page?: number; per_page?: number; search?: string }>) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    fetchUserOrdersSuccess: (state, action: PayloadAction<{ orders: Order[]; total: number; page: number }>) => {
+      state.isLoading = false;
+      state.orders = action.payload.orders;
+      state.totalOrders = action.payload.total;
+      state.currentPage = action.payload.page;
+      state.error = null;
+    },
+    fetchUserOrdersFailure: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
     // Fetch orders actions
     fetchOrdersRequest: (state, _action: PayloadAction<{ page?: number; per_page?: number; search?: string }>) => {
       state.isLoading = true;
@@ -79,6 +102,26 @@ const orderSlice = createSlice({
       state.error = action.payload;
     },
 
+    // Create order actions
+    createOrderRequest: (state, _action: PayloadAction<{ shipping_address_id: number; payment_method: string; note?: string }>) => {
+      state.isLoading = true;
+      state.error = null;
+      state.createdOrder = null;
+      state.paymentUrl = null;
+    },
+    createOrderSuccess: (state, action: PayloadAction<{ order: any; payment_url: string }>) => {
+      state.isLoading = false;
+      state.createdOrder = action.payload.order;
+      state.paymentUrl = action.payload.payment_url;
+      state.error = null;
+    },
+    createOrderFailure: (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.error = action.payload;
+      state.createdOrder = null;
+      state.paymentUrl = null;
+    },
+
     // Clear error
     clearError: (state) => {
       state.error = null;
@@ -88,10 +131,19 @@ const orderSlice = createSlice({
     clearCurrentOrder: (state) => {
       state.currentOrder = null;
     },
+
+    // Clear created order data
+    clearCreatedOrder: (state) => {
+      state.createdOrder = null;
+      state.paymentUrl = null;
+    },
   },
 });
 
 export const {
+  fetchUserOrdersRequest,
+  fetchUserOrdersSuccess,
+  fetchUserOrdersFailure,
   fetchOrdersRequest,
   fetchOrdersSuccess,
   fetchOrdersFailure,
@@ -101,8 +153,12 @@ export const {
   updateOrderStatusRequest,
   updateOrderStatusSuccess,
   updateOrderStatusFailure,
+  createOrderRequest,
+  createOrderSuccess,
+  createOrderFailure,
   clearError,
   clearCurrentOrder,
+  clearCreatedOrder,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

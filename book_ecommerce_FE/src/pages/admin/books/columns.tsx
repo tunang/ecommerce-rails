@@ -139,12 +139,12 @@ export const createColumns = (onEdit: (book: Book) => void): ColumnDef<Book>[] =
     size: 140,
     cell: ({ row }) => {
       const date = row.getValue("created_at") as string;
-      return <span className="font-medium">{formatDate(new Date(date))}</span>;
+      return <span className="text-sm">{formatDate(new Date(date))}</span>;
     },
   },
   {
     accessorKey: "actions",
-    header: () => <div className="text-center w-full">Hành động</div>,
+    header: () => <div className="text-center w-full">Thao tác</div>,
     size: 120,
     enableResizing: false,
     cell: ({ row }) => {

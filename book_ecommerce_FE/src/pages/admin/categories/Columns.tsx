@@ -11,21 +11,41 @@ export const createColumns = (onEdit: (category: Category) => void): ColumnDef<C
     header: "ID",
     size: 60,
     minSize: 50,
+    cell: ({ row }) => {
+      const id = row.getValue("id") as number;
+      return <span className="font-medium text-sm">{id}</span>;
+    },
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: "Tên danh mục",
     size: 150,
+    cell: ({ row }) => {
+      const name = row.getValue("name") as string;
+      return <span className="font-medium text-sm">{name}</span>;
+    },
   },
   {
     accessorKey: "description",
-    header: "Description",
+    header: "Mô tả",
     size: 300,
+    cell: ({ row }) => {
+      const description = row.getValue("description") as string;
+      return (
+        <div className="max-w-[280px]">
+          <span className="text-sm line-clamp-2">{description || "N/A"}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "parent_id",
-    header: "Parent ID",
+    header: "Danh mục cha",
     size: 100,
+    cell: ({ row }) => {
+      const parentId = row.getValue("parent_id") as number;
+      return <span className="text-sm">{parentId || "N/A"}</span>;
+    },
   },
   {
     accessorKey: "active",
@@ -41,32 +61,32 @@ export const createColumns = (onEdit: (category: Category) => void): ColumnDef<C
               : "bg-red-100 text-red-800"
           }`}
         >
-          {isActive ? "Active" : "Inactive"}
+          {isActive ? "Hoạt động" : "Không hoạt động"}
         </span>
       );
     },
   },
   {
     accessorKey: "created_at",
-    header: "Created At",
+    header: "Ngày tạo",
     size: 150,
     cell: ({ row }) => {
       const date = row.getValue("created_at") as Date;
-      return <span className="font-medium">{formatDate(date)}</span>;
+      return <span className="text-sm">{formatDate(date)}</span>;
     },
   },
   {
     accessorKey: "updated_at",
-    header: "Updated At",
+    header: "Ngày cập nhật",
     size: 150,
     cell: ({ row }) => {
       const date = row.getValue("updated_at") as Date;
-      return <span className="font-medium">{formatDate(date)}</span>;
+      return <span className="text-sm">{formatDate(date)}</span>;
     },
   },
   {
     accessorKey: "actions",
-    header: () => <div className="text-center w-full">Actions</div>,
+    header: () => <div className="text-center w-full">Thao tác</div>,
     size: 120,
     enableResizing: false,
     cell: ({ row }) => {

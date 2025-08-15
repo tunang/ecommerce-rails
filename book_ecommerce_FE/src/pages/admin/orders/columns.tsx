@@ -15,7 +15,7 @@ export const createColumns = (
     size: 20,
     cell: ({ row }) => {
       const id = row.getValue("id") as number;
-      return <span className="font-mono text-sm">{id}</span>;
+      return <span className="font-medium text-sm">{id}</span>;
     },
   },
   {
@@ -26,7 +26,7 @@ export const createColumns = (
       const orderNumber = row.getValue("order_number") as string;
       return (
         <div className="truncate max-w-[120px]">
-          <span className="font-mono text-sm font-medium">{orderNumber}</span>
+          <span className="font-medium text-sm">{orderNumber}</span>
         </div>
       );
     },
@@ -39,8 +39,8 @@ export const createColumns = (
       const user = row.getValue("user") as Order['user'];
       return (
         <div className="truncate max-w-[160px]">
-          <div className="font-medium">{user.name}</div>
-          <div className="text-sm text-gray-500">{user.email}</div>
+          <div className="font-medium text-sm">{user.name}</div>
+          <div className="text-xs text-gray-500">{user.email}</div>
         </div>
       );
     },
@@ -169,7 +169,7 @@ export const createColumns = (
   },
   {
     accessorKey: "actions",
-    header: () => <div className="text-center w-full">Hành động</div>,
+    header: () => <div className="text-center w-full">Thao tác</div>,
     size: 120,
     cell: ({ row }) => {
       const order = row.original;

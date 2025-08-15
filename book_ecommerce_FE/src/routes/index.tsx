@@ -15,6 +15,9 @@ import BookDetail from "@/pages/books/BookDetail";
 import Cart from "@/pages/cart";
 import Address from "@/pages/address";
 import Checkout from "@/pages/checkout";
+import PaymentSuccessPage from "@/pages/payment/success";
+import PaymentCancelPage from "@/pages/payment/cancel";
+import OrderPage from "@/pages/order";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -48,6 +51,19 @@ const router = createBrowserRouter([
         path: 'checkout',
         element: <Checkout />,
       },
+      {
+        path: 'checkout/success',
+        element: <PaymentSuccessPage />,
+      },
+      {
+        path: 'checkout/cancel',
+        element: <PaymentCancelPage />,
+      },
+      {
+        path: 'orders',
+        element: <OrderPage />,
+      }
+
     ],
   },
   {

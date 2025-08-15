@@ -1,7 +1,7 @@
 class CategoryPolicy < ApplicationPolicy
   # Người dùng có thể xem danh sách và chi tiết
   def index?
-    true
+    user.admin?
   end
 
   def show?
