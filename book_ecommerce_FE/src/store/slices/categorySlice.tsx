@@ -10,6 +10,14 @@ interface CategoryState {
   totalCategories: number;
   currentPage: number;
   pageSize: number;
+  // Pagination từ API response
+  pagination: {
+    current_page: number;
+    next_page: number | null;
+    prev_page: number | null;
+    total_pages: number;
+    total_count: number;
+  };
 }
 
 const initialState: CategoryState = {
@@ -20,6 +28,13 @@ const initialState: CategoryState = {
   totalCategories: 0,
   currentPage: 1,
   pageSize: 10,
+  pagination: {
+    current_page: 1,
+    next_page: null,
+    prev_page: null,
+    total_pages: 1,
+    total_count: 0,
+  },
 };
 
 const categorySlice = createSlice({
@@ -31,12 +46,27 @@ const categorySlice = createSlice({
       state.isLoading = true;
       state.error = null;
     },
-    fetchCategoriesSuccess: (state, action: PayloadAction<{ categories: Category[]; total: number; page: number; per_page: number }>) => {
+    fetchCategoriesSuccess: (state, action: PayloadAction<{ 
+      categories: Category[]; 
+      total: number; 
+      page: number; 
+      per_page: number;
+      pagination?: {
+        current_page: number;
+        next_page: number | null;
+        prev_page: number | null;
+        total_pages: number;
+        total_count: number;
+      }
+    }>) => {
       state.isLoading = false;
       state.categories = action.payload.categories;
       state.totalCategories = action.payload.total;
       state.currentPage = action.payload.page;
       state.pageSize = action.payload.per_page;
+      if (action.payload.pagination) {
+        state.pagination = action.payload.pagination;
+      }
       state.error = null;
     },
     fetchCategoriesFailure: (state, action: PayloadAction<string>) => {

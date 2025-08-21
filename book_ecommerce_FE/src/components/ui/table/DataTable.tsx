@@ -13,17 +13,28 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
+import { TablePagination } from "./TablePagination"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   loading?: boolean
+  pagination?: {
+    current_page: number;
+    next_page: number | null;
+    prev_page: number | null;
+    total_pages: number;
+    total_count: number;
+  }
+  onPageChange?: (page: number) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  loading
+  loading,
+  pagination,
+  onPageChange
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -32,7 +43,7 @@ export function DataTable<TData, TValue>({
   })
   
   return (
-    <div className="">
+    <div className="space-y-4">
       <Table className="table-fixed border-2 border-gray-200 w-full">
         <TableHeader >
           {table.getHeaderGroups().map((headerGroup) => (
@@ -80,12 +91,23 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                Không có dữ liệu.
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
+      
+      {pagination && onPageChange && (
+        <TablePagination
+          currentPage={pagination.current_page}
+          totalPages={pagination.total_pages}
+          nextPage={pagination.next_page}
+          prevPage={pagination.prev_page}
+          totalCount={pagination.total_count}
+          onPageChange={onPageChange}
+        />
+      )}
     </div>
   )
 }

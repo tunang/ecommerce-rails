@@ -22,9 +22,10 @@ import {
 } from '../slices/categorySlice';
 import type { SagaIterator } from 'redux-saga';
 import api from '@/services/api.service';
+import type { PaginationParams } from '@/types';
 
 // Fetch categories saga
-function* fetchCategoriesSaga(action: PayloadAction<{ page?: number; per_page?: number; search?: string }>): SagaIterator {
+function* fetchCategoriesSaga(action: PayloadAction<PaginationParams>): SagaIterator {
   try {
     const { page = 1, per_page = 10, search = '' } = action.payload;
     
@@ -35,11 +36,21 @@ function* fetchCategoriesSaga(action: PayloadAction<{ page?: number; per_page?: 
         search,
       },
     });
+    const categories = response.data.categories || [];
+    const meta = response.data.meta || {};
+    
     yield put(fetchCategoriesSuccess({
-      categories: response.data.categories || response,
-      total: response.total || response.length,
-      page: response.page || page,
-      per_page: response.per_page || per_page,
+      categories,
+      total: meta.total_count || categories.length,
+      page: meta.current_page || page,
+      per_page: per_page,
+      pagination: {
+        current_page: meta.current_page || page,
+        next_page: meta.next_page,
+        prev_page: meta.prev_page,
+        total_pages: meta.total_pages || 1,
+        total_count: meta.total_count || categories.length,
+      },
     }));
   } catch (error: any) {
     yield put(fetchCategoriesFailure(error.response?.data?.message || 'Lỗi khi tải danh sách thể loại'));

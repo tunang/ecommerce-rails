@@ -31,7 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutRequest } from "@/store/slices/authSlice";
 import { Badge } from "@/components/ui/badge";
 import { fetchNeatestCategoriesRequest } from "@/store/slices/categorySlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const dropdownMenuUser = [
   {
@@ -70,6 +70,7 @@ const Header = () => {
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { categories } = useSelector(
     (state: RootState) => state.category
@@ -78,6 +79,10 @@ const Header = () => {
   useEffect(() => {
     dispatch(fetchNeatestCategoriesRequest());
   }, []);
+
+  const handleSearch = () => {
+    navigate(`/search?search=${searchQuery}`);
+  };
   
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -205,11 +210,13 @@ const Header = () => {
 
             {/* Search Bar */}
             <div className="relative flex-1 min-w-0">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Search onClick={() => handleSearch()} className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Tìm kiếm sách..."
                 className="pl-10 pr-4 w-full placeholder:text-sm lg:placeholder:text-base"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
           </div>

@@ -11,7 +11,7 @@ import type { RootState } from "@/store";
 
 function DemoPage() {
   const dispatch = useDispatch();
-  const { categories, pageSize, currentPage, isLoading } = useSelector((state: RootState) => state.category);
+  const { categories, pageSize, currentPage, isLoading, pagination } = useSelector((state: RootState) => state.category);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -38,6 +38,10 @@ function DemoPage() {
     setSelectedCategory(null);
   };
 
+  const handlePageChange = (page: number) => {
+    dispatch(fetchCategoriesRequest({ page, per_page: pageSize, search: "" }));
+  };
+
   const columns = createColumns(handleEdit);
 
   return (
@@ -51,7 +55,13 @@ function DemoPage() {
       </div>
       
       <div className="flex-1">
-        <DataTable columns={columns} data={categories} loading={isLoading} />
+        <DataTable 
+          columns={columns} 
+          data={categories} 
+          loading={isLoading}
+          pagination={pagination}
+          onPageChange={handlePageChange}
+        />
       </div>
       
       <CategoryModal

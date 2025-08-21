@@ -11,8 +11,20 @@ class CustomDeviseMailer < Devise::Mailer
 
     mail(
       to: record.email,
-      from: ENV.fetch('DEFAULT_FROM_EMAIL', 'longprovip2508@gmail.com'),
-      subject: 'Confirmation instructions'
+      subject: 'Confirmation instructions',
+      from: ENV.fetch('DEFAULT_FROM_EMAIL', 'longprovip2508@gmail.com')
+    )
+  end
+
+  def reset_password_instructions(record, token, opts = {})
+    @resource = record
+    @token = token
+    @reset_url = "#{ENV['FRONTEND_URL']}/reset-password?reset_password_token=#{token}"
+
+    mail(
+      to: record.email,
+      subject: opts[:subject] || 'Reset your password',
+      from: ENV.fetch('DEFAULT_FROM_EMAIL', 'longprovip2508@gmail.com')
     )
   end
 end

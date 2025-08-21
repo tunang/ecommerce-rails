@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Book, BookFormData } from '../../types/book.type';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import type { Book, BookFormData } from "../../types/book.type";
 
 interface BookState {
   books: Book[];
@@ -10,6 +10,14 @@ interface BookState {
   totalBooks: number;
   currentPage: number;
   pageSize: number;
+  // Pagination từ API response
+  pagination: {
+    current_page: number;
+    next_page: number | null;
+    prev_page: number | null;
+    total_pages: number;
+    total_count: number;
+  };
 }
 
 const initialState: BookState = {
@@ -20,22 +28,53 @@ const initialState: BookState = {
   totalBooks: 0,
   currentPage: 1,
   pageSize: 10,
+  pagination: {
+    current_page: 1,
+    next_page: null,
+    prev_page: null,
+    total_pages: 1,
+    total_count: 0,
+  },
 };
 
 const bookSlice = createSlice({
-  name: 'book',
+  name: "book",
   initialState,
   reducers: {
     // Fetch books actions
-    fetchBooksRequest: (state, _action: PayloadAction<{ page?: number; per_page?: number; search?: string }>) => {
+    fetchBooksRequest: (
+      state,
+      _action: PayloadAction<{
+        page?: number;
+        per_page?: number;
+        search?: string;
+      }>
+    ) => {
       state.isLoading = true;
       state.error = null;
     },
-    fetchBooksSuccess: (state, action: PayloadAction<{ books: Book[]; total: number; page: number }>) => {
+    fetchBooksSuccess: (
+      state,
+      action: PayloadAction<{ 
+        books: Book[]; 
+        total: number; 
+        page: number;
+        pagination?: {
+          current_page: number;
+          next_page: number | null;
+          prev_page: number | null;
+          total_pages: number;
+          total_count: number;
+        }
+      }>
+    ) => {
       state.isLoading = false;
       state.books = action.payload.books;
       state.totalBooks = action.payload.total;
       state.currentPage = action.payload.page;
+      if (action.payload.pagination) {
+        state.pagination = action.payload.pagination;
+      }
       state.error = null;
     },
     fetchBooksFailure: (state, action: PayloadAction<string>) => {
@@ -58,14 +97,21 @@ const bookSlice = createSlice({
       state.error = action.payload;
     },
 
-    fetchBooksByGenreRequest: (state, _action: PayloadAction<{ genreId: number }>) => {
+    fetchBooksByGenreRequest: (
+      state,
+      _action: PayloadAction<{ genreId: number }>
+    ) => {
       state.isLoading = true;
       state.error = null;
     },
-    fetchBooksByGenreSuccess: (state, action: PayloadAction<Book[]>) => {
+    fetchBooksByGenreSuccess: (
+      state,
+      action: PayloadAction<{ books: Book[]; total: number; page: number }>
+    ) => {
+      console.log(action.payload);
       state.isLoading = false;
-      state.books = action.payload;
-      state.totalBooks = action.payload.length;
+      state.books = action.payload.books;
+      state.totalBooks = action.payload.total;
       state.currentPage = 1;
       state.error = null;
     },
@@ -74,7 +120,6 @@ const bookSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-
 
     // Create book actions (Admin only)
     createBookRequest: (state, _action: PayloadAction<BookFormData>) => {
@@ -93,13 +138,18 @@ const bookSlice = createSlice({
     },
 
     // Update book actions (Admin only)
-    updateBookRequest: (state, _action: PayloadAction<{ id: number; book: BookFormData }>) => {
+    updateBookRequest: (
+      state,
+      _action: PayloadAction<{ id: number; book: BookFormData }>
+    ) => {
       state.isLoading = true;
       state.error = null;
     },
     updateBookSuccess: (state, action: PayloadAction<Book>) => {
       state.isLoading = false;
-      const index = state.books.findIndex((book: Book) => book.id === action.payload.id);
+      const index = state.books.findIndex(
+        (book: Book) => book.id === action.payload.id
+      );
       if (index !== -1) {
         state.books[index] = action.payload;
       }
@@ -120,7 +170,9 @@ const bookSlice = createSlice({
     },
     deleteBookSuccess: (state, action: PayloadAction<number>) => {
       state.isLoading = false;
-      state.books = state.books.filter((book: Book) => book.id !== action.payload);
+      state.books = state.books.filter(
+        (book: Book) => book.id !== action.payload
+      );
       state.totalBooks -= 1;
       if (state.currentBook?.id === action.payload) {
         state.currentBook = null;
@@ -141,6 +193,9 @@ const bookSlice = createSlice({
     clearCurrentBook: (state) => {
       state.currentBook = null;
     },
+
+    
+    
   },
 });
 
@@ -168,4 +223,4 @@ export const {
 } = bookSlice.actions;
 
 export default bookSlice.reducer;
-export type { Book }; 
+export type { Book };

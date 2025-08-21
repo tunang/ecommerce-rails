@@ -19,10 +19,10 @@ import {
 } from '../slices/authorSlice';
 import type { SagaIterator } from 'redux-saga';
 import api from '@/services/api.service';
-
+import type { PaginationParams } from '@/types';
 
 // Fetch authors saga
-function* fetchAuthorsSaga(action: PayloadAction<{ page?: number; per_page?: number; search?: string }>): SagaIterator {
+function* fetchAuthorsSaga(action: PayloadAction<PaginationParams>): SagaIterator {
   try {
     const { page = 1, per_page = 10, search = '' } = action.payload;
     
@@ -34,11 +34,22 @@ function* fetchAuthorsSaga(action: PayloadAction<{ page?: number; per_page?: num
       },
     });
     
+    const authors = response.data.authors || [];
+    // API có thể trả về meta hoặc pagination
+    const meta = response.data.meta || response.data.pagination || {};
+    
     yield put(fetchAuthorsSuccess({
-      authors: response.data.authors || response,
-      total: response.total || response.length,
-      page: response.page || page,
-      per_page: response.per_page || per_page,
+      authors,
+      total: meta.total_count || authors.length,
+      page: meta.current_page || page,
+      per_page: per_page,
+      pagination: {
+        current_page: meta.current_page || page,
+        next_page: meta.next_page,
+        prev_page: meta.prev_page,
+        total_pages: meta.total_pages || 1,
+        total_count: meta.total_count || authors.length,
+      },
     }));
   } catch (error: any) {
     yield put(fetchAuthorsFailure(error.response?.data?.message || 'Lỗi khi tải danh sách tác giả'));

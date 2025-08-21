@@ -5,12 +5,15 @@ import HomePage from "@/pages/home";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import Confirm from "@/pages/auth/confirm";
+import ForgotPassword from "@/pages/auth/forgot-password";
+import ResetPassword from "@/pages/auth/reset-password";
 import Books from "@/pages/admin/books";
 import Categories from "@/pages/admin/categories";
 import Authors from "@/pages/admin/authors";
 import Orders from "@/pages/admin/orders";
 import CategoryPage from "@/pages/category";
 import CategoryProductPage from "@/pages/category/CategoryProducts";
+import SearchResults from "@/pages/search/SearchResults";
 import BookDetail from "@/pages/books/BookDetail";
 import Cart from "@/pages/cart";
 import Address from "@/pages/address";
@@ -18,6 +21,8 @@ import Checkout from "@/pages/checkout";
 import PaymentSuccessPage from "@/pages/payment/success";
 import PaymentCancelPage from "@/pages/payment/cancel";
 import OrderPage from "@/pages/order";
+import ProtectedRoute from "./ProtectedRoute";
+import { Role } from "@/types";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -36,32 +41,60 @@ const router = createBrowserRouter([
         element: <CategoryProductPage />,
       },
       {
+        path: 'search',
+        element: <SearchResults />,
+      },
+      {
         path: 'books/:id',
         element: <BookDetail />,
       },
       {
         path: 'cart',
-        element: <Cart />,
+        element: (
+          <ProtectedRoute allowedRoles={[Role.USER, Role.ADMIN]}>
+            <Cart />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'address',
-        element: <Address />,
+        element: (
+          <ProtectedRoute allowedRoles={[Role.USER, Role.ADMIN]}>
+            <Address />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'checkout',
-        element: <Checkout />,
+        element: (
+          <ProtectedRoute allowedRoles={[Role.USER, Role.ADMIN]}>
+            <Checkout />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'checkout/success',
-        element: <PaymentSuccessPage />,
+        element: (
+          <ProtectedRoute allowedRoles={[Role.USER, Role.ADMIN]}>
+            <PaymentSuccessPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'checkout/cancel',
-        element: <PaymentCancelPage />,
+        element: (
+          <ProtectedRoute allowedRoles={[Role.USER, Role.ADMIN]}>
+            <PaymentCancelPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'orders',
-        element: <OrderPage />,
+        element: (
+          <ProtectedRoute allowedRoles={[Role.USER, Role.ADMIN]}>
+            <OrderPage />
+          </ProtectedRoute>
+        ),
       }
 
     ],
@@ -79,15 +112,21 @@ const router = createBrowserRouter([
     element: <Confirm />,
   },
   {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
+  },
+  {
     path: 'admin',
-    // element: (
-    //   <ProtectedRoute allowedRoles={[Role.ADMIN]}>
-    //     <AdminLayout />
-    //   </ProtectedRoute>
-    // ),
     element: (
+      <ProtectedRoute allowedRoles={[Role.ADMIN]}>
         <AdminLayout />
+      </ProtectedRoute>
     ),
+   
     children: [
       {
         path: 'books',

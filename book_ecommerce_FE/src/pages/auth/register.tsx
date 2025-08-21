@@ -24,45 +24,24 @@ import {
 } from "@/components/ui/form";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
-import { clearError, registerRequest } from "@/store/slices/authSlice";
+import { clearMessage, registerRequest } from "@/store/slices/authSlice";
+import { registerSchema } from "@/schemas/register.schema";
 
-const formSchema = z.object({
-  name: z.string()
-    .min(2, {
-      message: "Tên phải có ít nhất 2 ký tự",
-    })
-    .max(50, {
-      message: "Tên không được quá 50 ký tự",
-    }),
-  email: z.string().email({
-    message: "Email không hợp lệ",
-  }),
-  password: z.string()
-    .min(6, {
-      message: "Mật khẩu phải có ít nhất 6 ký tự",
-    })
-    .max(100, {
-      message: "Mật khẩu không được quá 100 ký tự",
-    }),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Mật khẩu xác nhận không khớp",
-  path: ["confirmPassword"],
-});
+
 
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isLoading, isAuthenticated, error } = useSelector(
+  const { isLoading, isAuthenticated, message } = useSelector(
     (state: RootState) => state.auth
   );
   
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.infer<typeof registerSchema>>({
     mode: "onTouched",
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -71,7 +50,7 @@ const Register = () => {
     },
   });
 
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof registerSchema>) {
     try {
       const { name, email, password } = data;
 
@@ -96,11 +75,11 @@ const Register = () => {
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
-    if (error) {
-      toast.error(error);
+    if (message) {
+      toast.error(message);
     }
-    dispatch(clearError());
-  }, [error]);
+    dispatch(clearMessage());
+  }, [message]);
 
   const fillDemoData = () => {
     form.setValue("name", "admin");

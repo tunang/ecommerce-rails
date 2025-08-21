@@ -6,7 +6,7 @@ interface AuthState {
   user: any | null;
   token: string | null;
   isLoading: boolean;
-  error: string | null;
+  message: string | null;
   isAuthenticated: boolean;
 }
 
@@ -14,7 +14,7 @@ const initialState: AuthState = {
   user: null,
   token: localStorage.getItem('token'),
   isLoading: false,
-  error: null,
+  message: null,
   isAuthenticated: !!localStorage.getItem('token'),
 };
 
@@ -32,63 +32,62 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.user = action.payload;
       state.isAuthenticated = true;
-      state.error = null;
+      state.message = null;
     },
     // Login actions
     loginRequest: (state, action: PayloadAction<{ email: string; password: string }>) => {
       console.log(action.payload);
       state.isLoading = true;
-      state.error = null;
+      state.message = null;
     },
     loginSuccess: (state, action: PayloadAction<{ user: User; token: string }>) => {
       state.isLoading = false;
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isAuthenticated = true;
-      state.error = null;
+      state.message = null;
     },
     loginFailure: (state, action: PayloadAction<string>) => {
       state.isLoading = false;
-      state.error = action.payload;
+      state.message = action.payload;
       state.isAuthenticated = false;
     },
 
     // Register actions
     registerRequest: (state, action: PayloadAction<{ email: string; name: string; password: string }>) => {
-      
-      state.error = null;
+      state.message = null;
       state.isLoading = true;
     },
     registerSuccess: (state) => {
       state.isLoading = false;
-      state.error = null;
+      state.message = null;
     },
     registerFailure: (state, action: PayloadAction<string>) => {
       state.isLoading = false;
-      state.error = action.payload;
+      state.message = action.payload;
     },
 
 
     // Logout action
     logoutRequest: (state) => {
       state.isLoading = true;
-      state.error = null;
+      state.message = null;
     },
     logoutSuccess: (state) => {
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
       state.isLoading = false;
-      state.error = null;
+      state.message = null;
       localStorage.removeItem('token');
     },
     logoutFailure: (state, action: PayloadAction<string>) => {
       state.isLoading = false;
-      state.error = action.payload;
+          state.message = action.payload;
     },
     // Clear error
-    clearError: (state) => {
-      state.error = null;
+    clearMessage: (state) => {
+      state.message = null;
     },
   },
 });
@@ -103,7 +102,7 @@ export const {
   logoutRequest,
   logoutSuccess,
   logoutFailure,
-  clearError,
+  clearMessage,
   initializeAuth,
   setUser,
 } = authSlice.actions;

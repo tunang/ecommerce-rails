@@ -1,5 +1,5 @@
 class OrdersController < ApplicationController
-  before_action :authenticate_user!, except: %i[index show] # ✅ Kiểm tra token trước mọi action
+  before_action :authenticate_user!, except: %i[index show ] # ✅ Kiểm tra token trước mọi action
   before_action :set_order, only: %i[show update destroy]
   before_action :authorize_order, only: %i[show update destroy]
 
@@ -149,6 +149,21 @@ class OrdersController < ApplicationController
           cancel_url: "#{ENV['FRONTEND_URL']}/checkout/cancel",
         )
 
+      order.update!(stripe_session_id: session.id)
+
+      # Only current user
+      # OrdersChannel.broadcast_to(
+      #   current_user,
+      #   {
+      #     type: 'ORDER_UPDATED', # custom type
+      #     payload: OrderSerializer.new(order).as_json,
+      #   },
+      # )
+
+      # All admin
+      ActionCable.server.broadcast("admin_orders", { type: "ORDER_UPDATED", payload: OrderSerializer.new(order).as_json })
+
+
       render json: {
                status: {
                  code: 201,
@@ -173,6 +188,10 @@ class OrdersController < ApplicationController
   def update
     authorize @order
     if @order.update(order_params)
+      OrdersChannel.broadcast_to(
+        current_user,
+        { type: 'ORDER_UPDATED', payload: OrderSerializer.new(@order).as_json },
+      )
       render json: {
                status: {
                  code: 201,

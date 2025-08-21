@@ -11,7 +11,7 @@ import type { RootState } from "@/store";
 
 function BooksPage() {
   const dispatch = useDispatch();
-  const { books, pageSize, currentPage, isLoading } = useSelector((state: RootState) => state.book);
+  const { books, pageSize, currentPage, isLoading, pagination } = useSelector((state: RootState) => state.book);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
@@ -38,6 +38,10 @@ function BooksPage() {
     setSelectedBook(null);
   };
 
+  const handlePageChange = (page: number) => {
+    dispatch(fetchBooksRequest({ page, per_page: pageSize, search: "" }));
+  };
+
   const columns = createColumns(handleEdit);
 
   return (
@@ -51,7 +55,13 @@ function BooksPage() {
       </div>
       
       <div className="flex-1">
-        <DataTable columns={columns} data={books} loading={isLoading} />
+        <DataTable 
+          columns={columns} 
+          data={books} 
+          loading={isLoading}
+          pagination={pagination}
+          onPageChange={handlePageChange}
+        />
       </div>
       
       <BookModal

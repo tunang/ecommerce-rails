@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
+import { TablePagination } from "@/components/ui/table/TablePagination";
 import { 
   Package, 
   MapPin, 
@@ -20,11 +21,15 @@ import type { Order } from "@/types/order.type";
 
 const OrdersPage = () => {
   const dispatch = useDispatch();
-  const { orders, isLoading, error } = useSelector((state: RootState) => state.order);
+  const { orders, isLoading, error, pagination, pageSize, currentPage } = useSelector((state: RootState) => state.order);
 
   useEffect(() => {
-    dispatch(fetchUserOrdersRequest({}));
-  }, [dispatch]);
+    dispatch(fetchUserOrdersRequest({ page: currentPage, per_page: pageSize }));
+  }, [dispatch, currentPage, pageSize]);
+
+  const handlePageChange = (page: number) => {
+    dispatch(fetchUserOrdersRequest({ page, per_page: pageSize }));
+  };
 
   const formatPrice = (price: number | string) => {
     const numPrice = typeof price === 'string' ? parseFloat(price) : price;
@@ -124,7 +129,14 @@ const OrdersPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1 className="text-2xl font-bold mb-6">Đơn hàng của tôi</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">Đơn hàng của tôi</h1>
+        {pagination && (
+          <div className="text-sm text-muted-foreground">
+            Tổng: {pagination.total_count} đơn hàng
+          </div>
+        )}
+      </div>
       
       <div className="space-y-6">
         {orders.map((order: Order) => (
@@ -243,6 +255,20 @@ const OrdersPage = () => {
           </Card>
         ))}
       </div>
+
+      {/* Pagination */}
+      {pagination && (
+        <div className="mt-8">
+          <TablePagination
+            currentPage={pagination.current_page}
+            totalPages={pagination.total_pages}
+            nextPage={pagination.next_page}
+            prevPage={pagination.prev_page}
+            totalCount={pagination.total_count}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      )}
     </div>
   );
 };

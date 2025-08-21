@@ -42,7 +42,7 @@ Rails.application.configure do
   # config.action_mailer.delivery_method = :letter_opener
   # config.action_mailer.perform_deliveries = true
   # config.action_mailer.default_url_options = { host: 'localhost', port: 3001 }
-  
+
   config.action_mailer.default_url_options = { host: 'localhost', port: 3001 }
   config.action_mailer.perform_deliveries = true
   config.action_mailer.delivery_method = :smtp
@@ -60,9 +60,7 @@ Rails.application.configure do
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
-
   config.hosts << ENV['NGROK_URL']
-
 
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
@@ -92,4 +90,12 @@ Rails.application.configure do
   # config.generators.apply_rubocop_autocorrect_after_generate!
 
   Rails.application.routes.default_url_options[:host] = 'localhost:3001'
+
+  config.action_cable.url = 'ws://localhost:3001/cable'
+  config.action_cable.allowed_request_origins = [
+    'http://localhost:5173', # React dev
+    'http://127.0.0.1:5173',
+    'http://localhost:3001', # Rails itself
+    'ws://localhost:3001',
+  ]
 end

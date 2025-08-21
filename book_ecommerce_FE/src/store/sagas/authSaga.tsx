@@ -101,7 +101,7 @@ function* registerSaga(
     });
 
     yield put(
-      registerSuccess()
+      registerSuccess(response.data.user)
     );
 
   } catch (error: any) {

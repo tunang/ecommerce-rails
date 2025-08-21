@@ -1,18 +1,9 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/store";
 
 const AdminLayout = () => {
-  const navigate = useNavigate();
-  const {user} = useSelector((state: RootState) => state.auth);
-  useEffect(() => {
-    if (user?.role !== "admin") {
-      navigate("/");
-    }
-  }, []);
+
 
 
 

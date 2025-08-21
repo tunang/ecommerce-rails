@@ -22,7 +22,7 @@ interface CategoryProductsResponse {
     code: number;
     message: string;
   };
-  books: Book[];
+  data: Book[];
   meta: {
     current_page: number;
     next_page: number | null;
@@ -84,7 +84,7 @@ const CategoryProducts = () => {
     );
   }
 
-  if (!data?.books || data.books.length === 0) {
+  if (!data?.data || data.data.length === 0) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card className="max-w-md mx-auto">
@@ -100,7 +100,7 @@ const CategoryProducts = () => {
     );
   }
 
-  const { books, meta } = data;
+  const { data: books, meta } = data;
 
   return (
     <div className="container mx-auto px-4 py-8">

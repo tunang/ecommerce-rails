@@ -10,6 +10,11 @@ const api = axios.create({
   },
 });
 
+const apiAuth = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  headers: { 'Content-Type': 'application/json' },
+});
+
 // Queue để lưu trữ các request thất bại trong quá trình refresh token
 let isRefreshing = false;
 let failedQueue: Array<{ resolve: (value?: any) => void; reject: (reason?: any) => void }> = [];
@@ -74,7 +79,7 @@ api.interceptors.response.use(
         if (!refreshToken) throw new Error('No refresh token available');
         
         // Get new access token
-        const response = await api.post('/refresh_token', { refresh_token: refreshToken });
+        const response = await apiAuth.post('/refresh_token', { refresh_token: refreshToken });
         console.log('Token refreshed successfully:', response.data);
         
         // Save new token
@@ -138,6 +143,33 @@ apiDefaultUpload.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+
+// Reset Password API functions
+export const forgotPassword = async (email: string) => {
+  try {
+    const response = await apiAuth.post('/password', {
+      user: { email }
+    });
+    return response.data;
+  } catch (error: any) {
+    throw error.response?.data || error;
+  }
+};
+
+export const resetPassword = async (reset_password_token: string, password: string, password_confirmation: string) => {
+  try {
+    const response = await apiAuth.put('/password', {
+      user: {
+        reset_password_token,
+        password,
+        password_confirmation
+      }
+    });
+    return response.data;
+  } catch (error: any) {
+    throw error.response?.data || error;
+  }
+};
 
 export default api;
 export { api, apiDefaultUpload };

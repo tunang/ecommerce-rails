@@ -12,6 +12,14 @@ interface OrderState {
   pageSize: number;
   createdOrder: any | null;
   paymentUrl: string | null;
+  // Pagination từ API response
+  pagination: {
+    current_page: number;
+    next_page: number | null;
+    prev_page: number | null;
+    total_pages: number;
+    total_count: number;
+  };
 }
 
 const initialState: OrderState = {
@@ -24,6 +32,13 @@ const initialState: OrderState = {
   pageSize: 10,
   createdOrder: null,
   paymentUrl: null,
+  pagination: {
+    current_page: 1,
+    next_page: null,
+    prev_page: null,
+    total_pages: 1,
+    total_count: 0,
+  },
 };
 
 const orderSlice = createSlice({
@@ -37,11 +52,25 @@ const orderSlice = createSlice({
       state.isLoading = true;
       state.error = null;
     },
-    fetchUserOrdersSuccess: (state, action: PayloadAction<{ orders: Order[]; total: number; page: number }>) => {
+    fetchUserOrdersSuccess: (state, action: PayloadAction<{ 
+      orders: Order[]; 
+      total: number; 
+      page: number;
+      pagination?: {
+        current_page: number;
+        next_page: number | null;
+        prev_page: number | null;
+        total_pages: number;
+        total_count: number;
+      }
+    }>) => {
       state.isLoading = false;
       state.orders = action.payload.orders;
       state.totalOrders = action.payload.total;
       state.currentPage = action.payload.page;
+      if (action.payload.pagination) {
+        state.pagination = action.payload.pagination;
+      }
       state.error = null;
     },
     fetchUserOrdersFailure: (state, action: PayloadAction<string>) => {
@@ -54,11 +83,25 @@ const orderSlice = createSlice({
       state.isLoading = true;
       state.error = null;
     },
-    fetchOrdersSuccess: (state, action: PayloadAction<{ orders: Order[]; total: number; page: number }>) => {
+    fetchOrdersSuccess: (state, action: PayloadAction<{ 
+      orders: Order[]; 
+      total: number; 
+      page: number;
+      pagination?: {
+        current_page: number;
+        next_page: number | null;
+        prev_page: number | null;
+        total_pages: number;
+        total_count: number;
+      }
+    }>) => {
       state.isLoading = false;
       state.orders = action.payload.orders;
       state.totalOrders = action.payload.total;
       state.currentPage = action.payload.page;
+      if (action.payload.pagination) {
+        state.pagination = action.payload.pagination;
+      }
       state.error = null;
     },
     fetchOrdersFailure: (state, action: PayloadAction<string>) => {

@@ -9,7 +9,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       render json: {
                status: {
                  code: 200,
-                 message: 'Signed up successfully.',
+                 message: 'An confimation email has been sent to your email ',
                },
                data:
                  UserSerializer.new(current_user).serializable_hash[:data][

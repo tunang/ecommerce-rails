@@ -11,7 +11,7 @@ import { DataTable } from "@/components/ui/table/DataTable";
 
 function AuthorsPage() {
   const dispatch = useDispatch();
-  const { authors, pageSize, currentPage, isLoading } = useSelector((state: RootState) => state.author);
+  const { authors, pageSize, currentPage, isLoading, pagination } = useSelector((state: RootState) => state.author);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
@@ -38,6 +38,10 @@ function AuthorsPage() {
     setSelectedAuthor(null);
   };
 
+  const handlePageChange = (page: number) => {
+    dispatch(fetchAuthorsRequest({ page, per_page: pageSize, search: "" }));
+  };
+
   const columns = createColumns(handleEdit);
 
   return (
@@ -51,7 +55,13 @@ function AuthorsPage() {
       </div>
       
       <div className="flex-1 overflow-hidden">
-        <DataTable columns={columns} data={authors} loading={isLoading} />
+        <DataTable 
+          columns={columns} 
+          data={authors} 
+          loading={isLoading}
+          pagination={pagination}
+          onPageChange={handlePageChange}
+        />
       </div>
       
       <AuthorModal

@@ -16,6 +16,8 @@ gem 'letter_opener'
 gem 'letter_opener_web' 
 gem "sidekiq"
 gem "stripe"
+gem "elasticsearch-model", "~> 8.0"
+gem "elasticsearch-rails", "~> 8.0"
 
 
 

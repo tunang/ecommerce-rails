@@ -13,6 +13,7 @@ Rails
                  confirmations: 'users/confirmations',
                  sessions: 'users/sessions',
                  registrations: 'users/registrations',
+                 passwords: 'users/passwords'
                }
 
     devise_scope :user do
@@ -22,12 +23,15 @@ Rails
     if Rails.env.development?
       mount LetterOpenerWeb::Engine, at: '/letter_opener'
     end
+    #Book routes
+    get '/books/search', to: 'books#search'
 
     resources :categories
     resources :books
     resources :authors
     resources :addresses
     resources :orders
+    
 
     # Cart routes
     get '/cart', to: 'carts#show'
@@ -49,4 +53,11 @@ Rails
     get '/categories/user/get_nested_category',
         to: 'categories#get_nested_category'
     get '/categories/:id/products', to: 'books#get_books_by_category'
+
+    #Stripe route
+    post '/stripe/webhook', to: 'stripe_webhooks#receive'
+    
+    #Action cable route
+    mount ActionCable.server => '/cable'
+
   end

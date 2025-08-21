@@ -24,33 +24,27 @@ import {
 } from "@/components/ui/form";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "@/store";
-import { clearError, loginRequest } from "@/store/slices/authSlice";
+import { clearMessage, loginRequest } from "@/store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
-const formSchema = z.object({
-  email: z.string().email({
-    message: "Email không hợp lệ",
-  }),
-  password: z.string().min(1, {
-    message: "Mật khẩu không được để trống",
-  }),
-});
+import { loginSchema } from "@/schemas/login.schema";
+
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isLoading, isAuthenticated, error } = useSelector(
+  const { isLoading, isAuthenticated, message } = useSelector(
     (state: RootState) => state.auth
   );
   const [showPassword, setShowPassword] = useState(false);
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.infer<typeof loginSchema>>({
     mode: "onTouched",
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
-  async function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof loginSchema>) {
     try {
       const { email, password } = data;
 
@@ -70,11 +64,11 @@ const Login = () => {
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
-    if (error) {
-      toast.error(error);
+    if (message) {
+      toast.error(message);
     }
-    dispatch(clearError());
-  }, [error]);
+    dispatch(clearMessage());
+  }, [message]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10 flex items-center justify-center p-4">

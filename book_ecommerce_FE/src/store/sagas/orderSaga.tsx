@@ -20,9 +20,10 @@ import {
 import type { SagaIterator } from 'redux-saga';
 import type { OrderUpdateData } from '@/types/order.type';
 import api from '@/services/api.service';
+import type { PaginationParams } from '@/types';
 
 // Fetch user orders saga
-function* fetchUserOrdersSaga(action: PayloadAction<{ page?: number; per_page?: number; search?: string }>): SagaIterator {
+function* fetchUserOrdersSaga(action: PayloadAction<PaginationParams>): SagaIterator {
   try {
     const { page = 1, per_page = 10, search = '' } = action.payload;
     
@@ -34,10 +35,21 @@ function* fetchUserOrdersSaga(action: PayloadAction<{ page?: number; per_page?: 
       },
     });
     
+    const orders = response.data.orders || [];
+    // API có thể trả về meta hoặc pagination
+    const meta = response.data.meta || response.data.pagination || {};
+    
     yield put(fetchUserOrdersSuccess({
-      orders: response.data.orders || response.orders || [],
-      total: response.data.pagination?.total_count || response.orders?.length || 0,
-      page: response.data.pagination?.current_page || page,
+      orders,
+      total: meta.total_count || orders.length,
+      page: meta.current_page || page,
+      pagination: {
+        current_page: meta.current_page || page,
+        next_page: meta.next_page,
+        prev_page: meta.prev_page,
+        total_pages: meta.total_pages || 1,
+        total_count: meta.total_count || orders.length,
+      },
     }));
   } catch (error: any) {
     yield put(fetchUserOrdersFailure(error.response?.data?.message || 'Lỗi khi tải danh sách đơn hàng'));
@@ -57,10 +69,24 @@ function* fetchOrdersSaga(action: PayloadAction<{ page?: number; per_page?: numb
       },
     });
     
+    const orders = response.data.orders || [];
+    // API có thể trả về meta hoặc pagination hoặc cấu trúc cũ
+    const meta = response.data.meta || response.data.pagination || {
+      current_page: response.data.page || page,
+      total_count: response.data.total || orders.length
+    };
+    
     yield put(fetchOrdersSuccess({
-      orders: response.data.orders || response.orders || [],
-      total: response.data.total || response.orders?.length || 0,
-      page: response.data.page || page,
+      orders,
+      total: meta.total_count || orders.length,
+      page: meta.current_page || page,
+      pagination: {
+        current_page: meta.current_page || page,
+        next_page: meta.next_page,
+        prev_page: meta.prev_page,
+        total_pages: meta.total_pages || 1,
+        total_count: meta.total_count || orders.length,
+      },
     }));
   } catch (error: any) {
     yield put(fetchOrdersFailure(error.response?.data?.message || 'Lỗi khi tải danh sách đơn hàng'));
