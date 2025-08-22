@@ -1,0 +1,12 @@
+version: 2
+authtoken: 2xlBp9oJZJR9RFx1xjEcAgAEr0T_3Wjsk25e8uYG9nMnc8Wz
+log: ngrok.log
+
+tunnels:
+  book-ecommerce-fe:
+    addr: 5173
+    proto: http
+
+  book-ecommerce-be:
+    addr: 3001
+    proto: http

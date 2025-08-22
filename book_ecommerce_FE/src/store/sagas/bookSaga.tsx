@@ -157,7 +157,7 @@ function* createBookSaga(action: PayloadAction<BookFormData>): SagaIterator {
         "Content-Type": "multipart/form-data",
       },
     });
-    yield put(createBookSuccess(response.data.book || response.data));
+    yield put(createBookSuccess(response.data.data || response.data));
   } catch (error: any) {
     yield put(
       createBookFailure(error.response?.data?.message || "Lỗi khi tạo sách")
@@ -216,7 +216,8 @@ function* updateBookSaga(
         "Content-Type": "multipart/form-data",
       },
     });
-    yield put(updateBookSuccess(response.data.book || response.data));
+    console.log(response);
+    yield put(updateBookSuccess(response.data.data || response.data));
   } catch (error: any) {
     yield put(
       updateBookFailure(

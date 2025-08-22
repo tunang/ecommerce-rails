@@ -150,12 +150,11 @@ const BookDetail = () => {
           {/* Main Image */}
           <div className="relative  aspect-[1/1] bg-gray-100 rounded-lg overflow-hidden group">
             <img
-              src={`http://localhost:3001${currentImage}`}
+              src={`${import.meta.env.VITE_API_BASE_URL}${currentImage}`}
               alt={book.title}
+              crossOrigin="anonymous"
               className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.src = "/placeholder-book.jpg";
-              }}
+           
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
             <Button
@@ -196,7 +195,7 @@ const BookDetail = () => {
                   }`}
                 >
                   <img
-                    src={`http://localhost:3001${imageUrl}`}
+                    src={`${import.meta.env.VITE_API_BASE_URL}${imageUrl}`}
                     alt={`${book.title} - hình ${index + 1}`}
                     className="w-full h-full object-cover"
                   />

@@ -21,7 +21,7 @@ export const createColumns = (onEdit: (book: Book) => void): ColumnDef<Book>[] =
         <div className="flex justify-start">
           {coverImageUrl ? (
             <img
-              src={`http://127.0.0.1:3001${coverImageUrl}`}
+              src={`${import.meta.env.VITE_API_BASE_URL}${coverImageUrl}`}
               alt={row.getValue("title") as string}
               className="w-12 h-12 object-cover rounded border"
             />
@@ -119,7 +119,7 @@ export const createColumns = (onEdit: (book: Book) => void): ColumnDef<Book>[] =
           {samplePages?.slice(0, 2).map((url, index) => (
             <img
               key={index}
-              src={`http://127.0.0.1:3001${url}`}
+              src={`${import.meta.env.VITE_API_BASE_URL}${url}`}
               alt={`Sample ${index + 1}`}
               className="w-8 h-10 object-cover rounded border"
             />

@@ -109,12 +109,10 @@ const Cart = () => {
                   <div className="flex-shrink-0">
                     <div className="w-24 h-32 bg-gray-100 rounded-lg overflow-hidden">
                       <img
-                        src={"http://localhost:3001" + item.book.cover_image_url || "/placeholder-book.jpg"}
+                        src={`${import.meta.env.VITE_API_BASE_URL}${item.book.cover_image_url}` || "/placeholder-book.jpg"}
                         alt={item.book.title}
                         className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = "/placeholder-book.jpg";
-                        }}
+                  
                       />
                     </div>
                   </div>

@@ -27,7 +27,7 @@ export const createColumns = (onEdit: (author: Author) => void): ColumnDef<Autho
         <div className="flex items-center justify-start">
           {photo ? (
             <img
-              src={`http://127.0.0.1:3001/${photo}`}
+              src={`${import.meta.env.VITE_API_BASE_URL}${photo}`}
               alt={row.getValue("name") as string}
               className="w-12 h-12 object-cover rounded-full border"
             />

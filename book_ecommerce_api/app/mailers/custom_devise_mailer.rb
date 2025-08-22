@@ -7,7 +7,8 @@ class CustomDeviseMailer < Devise::Mailer
   def confirmation_instructions(record, token, opts = {})
     @resource = record
     @token = token
-    @confirmation_url = "#{ENV['FRONTEND_URL']}/confirm?token=#{token}"
+    # @confirmation_url = "#{ENV['FRONTEND_URL']}/confirm?token=#{token}"
+    @confirmation_url = "https://8dacc2d677cb.ngrok-free.app/confirm?token=#{token}"
 
     mail(
       to: record.email,
@@ -19,7 +20,7 @@ class CustomDeviseMailer < Devise::Mailer
   def reset_password_instructions(record, token, opts = {})
     @resource = record
     @token = token
-    @reset_url = "#{ENV['FRONTEND_URL']}/reset-password?reset_password_token=#{token}"
+    @reset_url = "https://8dacc2d677cb.ngrok-free.app/reset-password?reset_password_token=#{token}"
 
     mail(
       to: record.email,

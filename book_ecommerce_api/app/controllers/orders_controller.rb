@@ -145,8 +145,8 @@ class OrdersController < ApplicationController
           line_items: line_items,
           mode: 'payment',
           success_url:
-            "#{ENV['FRONTEND_URL']}/checkout/success?session_id={CHECKOUT_SESSION_ID}",
-          cancel_url: "#{ENV['FRONTEND_URL']}/checkout/cancel",
+            "#{ENV['NGROK_FRONTEND_URL']}/checkout/success?session_id={CHECKOUT_SESSION_ID}",
+          cancel_url: "#{ENV['NGROK_FRONTEND_URL']}/checkout/cancel",
         )
 
       order.update!(stripe_session_id: session.id)

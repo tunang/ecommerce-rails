@@ -38,11 +38,6 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   # Set localhost to be used by links generated in mailer templates.
-
-  # config.action_mailer.delivery_method = :letter_opener
-  # config.action_mailer.perform_deliveries = true
-  # config.action_mailer.default_url_options = { host: 'localhost', port: 3001 }
-
   config.action_mailer.default_url_options = { host: 'localhost', port: 3001 }
   config.action_mailer.perform_deliveries = true
   config.action_mailer.delivery_method = :smtp
@@ -60,9 +55,8 @@ Rails.application.configure do
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
-  # config.hosts << ENV['NGROK_URL']
-  config.hosts << /.*\.ngrok\.io/
-
+  # Allow ngrok hosts
+  config.hosts << /.*\.ngrok-free\.app/ # Updated for new ngrok domain format
 
   # Raise an error on page load if there are pending migrations.
   config.active_record.migration_error = :page_load
@@ -93,11 +87,19 @@ Rails.application.configure do
 
   Rails.application.routes.default_url_options[:host] = 'localhost:3001'
 
+  # ActionCable configuration for ngrok
   config.action_cable.url = 'ws://localhost:3001/cable'
   config.action_cable.allowed_request_origins = [
-    'http://localhost:5173', # React dev
+    # Local development
+    'http://localhost:5173',
     'http://127.0.0.1:5173',
-    'http://localhost:3001', # Rails itself
+    'http://localhost:3001',
     'ws://localhost:3001',
+    # Ngrok URLs - replace with your actual ngrok URLs
+    ENV['NGROK_FRONTEND_URL'],
+    ENV['NGROK_BACKEND_URL'],
+    ENV['NGROK_BACKEND_URL']&.gsub('https://', 'wss://'),
   ]
+
+  
 end
